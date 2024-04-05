@@ -28,6 +28,7 @@
     "css-loader": "^6.11.0",
     "electron": "29.2.0",
     "node-loader": "^2.0.0",
+    "react-router-dom": "^6.22.3",
     "style-loader": "^3.3.4"
   },
   "keywords": [],
@@ -37,6 +38,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "electron-is-dev": "^3.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
