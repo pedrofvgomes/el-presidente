@@ -22,10 +22,9 @@ const DailyObjective = observer(() => {
         <div
             style={{
                 backgroundColor: 'white',
-                padding: '10px 0px',
                 boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)',
-                display: 'inline-block',
                 textAlign: 'center',
+                width: 'max-content',
                 padding: '10px 20px',
                 alignItems: 'center',
                 justifyContent: 'center',

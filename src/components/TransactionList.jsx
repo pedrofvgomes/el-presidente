@@ -16,8 +16,9 @@ const TransactionList = observer(() => {
     return (
         <div
             style={{
-                backgroundColor:'lightgrey',
+                backgroundColor:'white',
                 display: 'inline-block',
+                boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)',
             }}
         >
             <Typography sx={{ fontSize: '15px', fontWeight: 'bold' }}>

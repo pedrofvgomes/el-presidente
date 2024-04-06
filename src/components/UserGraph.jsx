@@ -4,8 +4,15 @@ import { observer } from "mobx-react-lite";
 
 const UserGraph = observer(()=> {
     return (
-        <div>
-            <p>{translate('hello')}</p>
+        <div
+            style={{
+                width: '100%',
+                height: '40%',
+                backgroundColor: 'white',
+                boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)',
+            }}
+        >
+            Graph
         </div>
     )
 });

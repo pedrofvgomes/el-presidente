@@ -20,14 +20,40 @@ export default function Home(props) {
                 height: '100%',
                 transition: 'width 0.3s ease-in-out',
                 display: 'flex',
-                flexDirection: 'row'
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
             }}
         >
             {/* Still need to separate in two columns */}
-            <UserGraph />
-            <UserBalance />
-            <TransactionList />
-            <DailyObjective />
+            <div
+                style={{
+                    flexDirection: 'column',
+                    display: 'flex',
+                    width: '45%',
+                    height: '90%',
+                    justifyContent: 'space-evenly',
+                    margin:'auto',
+                    alignItems:'center'
+                }}
+            >
+                <UserGraph />
+                <TransactionList />
+            </div>
+
+            <div
+                style={{
+                    flexDirection: 'column',
+                    display: 'flex',
+                    width: '45%',
+                    height: '90%',
+                    justifyContent: 'space-evenly',
+                    margin:'auto',
+                    alignItems: 'center'
+                }}
+            >
+                <UserBalance />
+                <DailyObjective />
+            </div>
         </div>
     )
 }
