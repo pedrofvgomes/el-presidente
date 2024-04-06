@@ -26,12 +26,5 @@ def main():
             process_data()
 
 
-            # Update the last checked size
-            last_checked_size = len(df)
-        
-        # Wait before checking the file again
-        time.sleep(10)  # Adjust the sleep time if necessary
-
-
 if __name__ == "__main__":
     main()
