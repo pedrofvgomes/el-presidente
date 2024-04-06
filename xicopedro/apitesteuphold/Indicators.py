@@ -65,6 +65,7 @@ def weighted_signal_decision_with_close_and_performance(df):
                     sell_amount = current_btc
                     current_btc = 0
                     current_money += sell_amount * last_price
+                    print("Current Profit: ", current_money - initial_value)
                     print_close_position(start, 'Sell', entry_price, last_price)
                 # Check if we're not repeating the same action
                 if last_action != 'open_buy':
@@ -82,6 +83,7 @@ def weighted_signal_decision_with_close_and_performance(df):
                     buy_amount = current_btc
                     current_btc = 0
                     current_money += buy_amount * last_price
+                    print("Current Profit: ", current_money - initial_value)
                     print_close_position(start, 'Buy', entry_price, last_price)
                 # Check if we're not repeating the same action
                 if last_action != 'open_sell':
@@ -99,6 +101,7 @@ def weighted_signal_decision_with_close_and_performance(df):
                 amount = current_btc
                 current_btc = 0
                 current_money += sell_amount * last_price
+                print("Current Profit: ", current_money - initial_value)
                 open_position, entry_price, last_action = None, None, f"close_{open_position.lower()}"
     delete_processed_lines(file_path)
 # Helper functions remain unchanged
