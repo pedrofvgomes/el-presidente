@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from utils import estimate_sentiment
 import matplotlib.pyplot as plt
 from collections import defaultdict
+import csv
 
 API_KEY = "PKWM3RCBC65TU4IGTE6S"
 API_SECRET = "iXNR6HciuopLcKoVT7UH5Hk9Q5zOnxSaukZFvqgv"
@@ -31,24 +32,23 @@ class News():
         dates = [ev.__dict__["_raw"]["created_at"] for ev in news]
         news = [ev.__dict__["_raw"]["headline"] for ev in news]
         probability, sentiment, sentiment_list, prob_list = estimate_sentiment(news)
-        sentiment_data = list(zip(dates, sentiment_list, prob_list))
-        sorted_sentiment_data = sorted(sentiment_data, key=lambda x: x[0])
-        sorted_dates = [data[0] for data in sorted_sentiment_data][1:]
-        sorted_sentiments = [data[1] for data in sorted_sentiment_data][1:]
-        sorted_probabilities = [data[2] for data in sorted_sentiment_data][1:]
-        return probability, sentiment, sorted_sentiments, sorted_dates, sorted_probabilities
+        sentiment_data = list(zip(news, dates, sentiment_list, prob_list))
+        sorted_sentiment_data = sorted(sentiment_data, key=lambda x: x[1])[1:]
+        return probability, sentiment, sorted_sentiment_data
 
-    def collect_sentiment_data(self, days=3):
-        sentiment_data = []
-        _, _, sentiments, dates, probs = self.get_sentiment(days=days)
-        for date, sent, prob in zip(dates, sentiments, probs):
-            sentiment_data.append((date, sent, prob))
-        return sentiment_data
 
-    def plot_sentiment_analysis(self, sentiment_data):
-        dates = [datetime.strptime(data[0][:10], '%Y-%m-%d') for data in sentiment_data]
-        sentiments = [1 if data[1] == "positive" else -1 if data[1] == "negative" else 0 for data in sentiment_data]
-        probabilities = [data[2] for data in sentiment_data]
+    def plot_sentiment_analysis(self, sentiment_data, filename='sentiment_data.csv'):
+
+        headlines = [data[0] for data in sentiment_data]
+        dates = [datetime.strptime(data[1][:10], '%Y-%m-%d') for data in sentiment_data]
+        sentiments = [1 if data[2] == "positive" else -1 if data[2] == "negative" else 0 for data in sentiment_data]
+        probabilities = [data[3] for data in sentiment_data]
+
+        with open(filename, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Headline', 'Date', 'Sentiment', 'Value'])
+            for headline, date, sentiment, prob in zip(headlines, dates, sentiments, probabilities):
+                writer.writerow([headline, date.strftime('%d-%m-%Y'), sentiment, sentiment * prob])
         
         sentiments_by_date = defaultdict(list)
         for date, sentiment, probability in zip(dates, sentiments, probabilities):
@@ -79,5 +79,5 @@ class News():
         print(mean_sentiments)
 
 news = News()
-sentiment_data = news.collect_sentiment_data(days=20)
+_, _, sentiment_data = news.get_sentiment(days=20)
 news.plot_sentiment_analysis(sentiment_data)
