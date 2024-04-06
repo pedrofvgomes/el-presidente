@@ -1,7 +1,6 @@
 export const UserSchema = {
     name: 'User',
     properties: {
-        id: 'int',
         first_name: 'string',
         last_name: 'string',
         email: 'string',
@@ -12,5 +11,4 @@ export const UserSchema = {
         birth_date: 'date',
         date_joined: 'date',
     },
-    primaryKey: 'id'
 };

@@ -1,18 +1,18 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, IconButton, ListItemIcon, ListItemText, MenuItem, Popover } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import {stores} from '../stores';
+import { stores } from '../stores';
 import PropTypes from 'prop-types';
 
 
 const LanguagePopover = observer(() => {
     const anchorRef = useRef(null);
     const [open, setOpen] = useState(false);
-    
+
     const handleOpen = () => {
         setOpen(true);
     };
-    
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -21,7 +21,7 @@ const LanguagePopover = observer(() => {
         stores.userStore.setLanguage(lang);
         handleClose();
     };
-    
+
     return <>
         <IconButton
             ref={anchorRef}
@@ -36,7 +36,7 @@ const LanguagePopover = observer(() => {
             size="large">
             <img src={LANGUAGES.find(l => l.value === stores.userStore.language).icon} alt={LANGUAGES.find(l => l.value === stores.userStore.language).label}
                 style={{ maxWidth: '100%', maxHeight: '100%', width: '100%', height: 'auto', objectFit: 'contain' }}
-                />
+            />
         </IconButton>
 
 
@@ -44,10 +44,10 @@ const LanguagePopover = observer(() => {
             <Box sx={{ py: 1 }}>
                 {LANGUAGES.map(option => (
                     <MenuItem
-                    key={option.value}
-                    selected={option.value === LANGUAGES.find(l => l.value === stores.userStore.language).value}
-                    onClick={() => handleSwitchLang(option.value)}
-                    sx={{ py: 1, px: 2.5 }}
+                        key={option.value}
+                        selected={option.value === LANGUAGES.find(l => l.value === stores.userStore.language).value}
+                        onClick={() => handleSwitchLang(option.value)}
+                        sx={{ py: 1, px: 2.5 }}
                     >
                         <ListItemIcon>
                             <Box component='img' alt={option.label} src={option.icon} sx={{ width: '35px', marginRight: '10px' }} />
@@ -106,11 +106,17 @@ const LANGUAGES = [
         label: 'Français',
         icon: '/img/fr.png',
     },
+
+    {
+        value: 'it',
+        label: 'Italiano',
+        icon: '/img/it.png',
+    },
     {
         value: 'de',
         label: 'Deutsch',
         icon: '/img/de.png',
-    },
+    }
 ]
 
 export default LanguagePopover;
