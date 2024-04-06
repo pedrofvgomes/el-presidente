@@ -23,13 +23,14 @@ def main():
         # Check if 10 new prices have been added since last check
         if len(df) - last_checked_size >= 10:
             # Execute your trading algorithm
-            weighted_signal_decision_with_close_and_performance(df)
+            process_data()
 
             # Update the last checked size
             last_checked_size = len(df)
         
         # Wait before checking the file again
         time.sleep(10)  # Adjust the sleep time if necessary
+
 
 if __name__ == "__main__":
     main()
