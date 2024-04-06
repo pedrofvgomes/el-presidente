@@ -96,7 +96,6 @@ def weighted_signal_decision_with_close_and_performance(df):
             if buy > current_btc:
                 buy = current_btc
             print("Sold:" , buy*last_price)
-            
             current_btc -= buy
             current_money += buy * last_price
             print("Current BTC:", current_btc, " (",current_btc * last_price,")")
