@@ -9,6 +9,8 @@ export const UserSchema = {
         username: 'string',
         language: 'string',
         balance: 'double',
+        birth_date: 'date',
+        date_joined: 'date',
     },
     primaryKey: 'id'
 };

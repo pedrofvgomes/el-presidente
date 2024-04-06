@@ -1,9 +1,13 @@
 import React from "react";
+import UserStatus from "../components/UserStatus.jsx";
+import TransactionList from "../components/TransactionList.jsx";
 
 export default function Home(){
     return (
         <div>
-            <h1>Home</h1>
+            <UserStatus />
+
+            <TransactionList />
         </div>
     )
 }
