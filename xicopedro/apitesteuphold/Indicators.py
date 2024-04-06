@@ -122,11 +122,11 @@ def process_data():
         # Here you can add a delay or a condition to exit the loop
 
 def print_open_position(index, position, price):
-    print(f"Opening {position} position at index {index+9} with price {price:.2f}")
+    print(f"Opening {position} with price {price:.2f}")
 
 def print_close_position(index, position, entry, last):
     performance = (last - entry) if position == 'Buy' else (entry - last)
-    print(f"Closing {position} position at index {index+9}. Performance: {performance:.2f}")
+    print(f"Closing {position} Performance: {performance:.2f}")
 
 
 def high_risk_scalping_strategy(df):
