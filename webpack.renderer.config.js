@@ -21,5 +21,21 @@ module.exports = {
         }
       ]
     }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src/assets', 'fonts'),
+          to: path.resolve(__dirname, '.webpack/renderer', 'fonts')
+        }
+      ]
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src/assets', 'css'),
+          to: path.resolve(__dirname, '.webpack/renderer', 'css')
+        }
+      ]
+    }),
   ]
 };

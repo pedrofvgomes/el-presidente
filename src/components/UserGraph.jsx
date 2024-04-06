@@ -2,7 +2,7 @@ import React from "react";
 import { translate } from "../translations/translate";
 import { observer } from "mobx-react-lite";
 
-const UserStatus = observer(()=> {
+const UserGraph = observer(()=> {
     return (
         <div>
             <p>{translate('hello')}</p>
@@ -10,4 +10,4 @@ const UserStatus = observer(()=> {
     )
 });
 
-export default UserStatus;
+export default UserGraph;

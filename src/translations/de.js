@@ -1,7 +1,7 @@
 const de = {
     hello: 'Hallo!',
     transaction_list: 'Transaktionsliste',
-    layout: 'Layout',
+    current_balance: 'Aktuelles Guthaben',
 };
 
 export default de;

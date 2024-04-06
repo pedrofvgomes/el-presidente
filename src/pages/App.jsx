@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from '../components/Layout.jsx';
 import Home from './Home.jsx';
 import Authentication from './Authentication.jsx';
+import '../assets/css/App.css';
 
 export default function App() {
     return (

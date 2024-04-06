@@ -1,7 +1,7 @@
 const en = {
     hello: 'Hello!',
     transaction_list: 'Transaction List',
-    layout: 'Layout',
+    current_balance: 'Current Balance',
 };
 
 export default en;

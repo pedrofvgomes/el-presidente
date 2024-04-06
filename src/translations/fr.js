@@ -1,7 +1,7 @@
 const fr = {
     hello: 'Bonjour !',
     transaction_list: 'Liste des transactions',
-    layout: 'Disposition',
+    current_balance: 'Solde Actuel',
 };
 
 export default fr;

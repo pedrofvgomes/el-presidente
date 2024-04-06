@@ -6,7 +6,8 @@ class UserStore {
     email = '';
     username = '';
     language = 'en';
-    balance = null;
+    balanceUSD = null;
+    balanceBTC = null;
     dateJoined = null;
 
     constructor() {
@@ -35,8 +36,12 @@ class UserStore {
         console.log('Language set to: ' + language);
     }
 
-    setBalance(balance) {
-        this.balance = balance;
+    setBalanceUSD(balanceUSD) {
+        this.balanceUSD = balanceUSD;
+    }
+
+    setBalanceBTC(balanceBTC) {
+        this.balanceBTC = balanceBTC;
     }
 
     setDateJoined(dateJoined) {

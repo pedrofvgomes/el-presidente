@@ -28,10 +28,11 @@ const LanguagePopover = observer(() => {
             onClick={handleOpen}
             sx={{
                 position: 'absolute',
-                top: '2vh',
+                top: '1vh',
                 right: '1vw',
                 padding: 0,
-                width: '50px',
+                width: '30px',
+                boxShadow: '0px 2px 10px 0px rgba(0,0,0,0.15)',
             }}
             size="large">
             <img src={LANGUAGES.find(l => l.value === stores.userStore.language).icon} alt={LANGUAGES.find(l => l.value === stores.userStore.language).label}
@@ -41,7 +42,7 @@ const LanguagePopover = observer(() => {
 
 
         <Language open={open} onClose={handleClose} anchorEl={anchorRef.current}>
-            <Box sx={{ py: 1 }}>
+            <Box sx={{ py: 1, boxShadow: '0px 2px 10px 0px rgba(0,0,0,0.15)' }}>
                 {LANGUAGES.map(option => (
                     <MenuItem
                         key={option.value}
@@ -67,7 +68,7 @@ const Language = ({ children, sx, ...other }) => {
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             PaperProps={{
                 sx: {
-                    mt: 1.5,
+                    mt: 1,
                     ml: 0.5,
                     overflow: 'inherit',
                     boxShadow: '0px 2px 10px 0px rgba(0,0,0,0.1)',

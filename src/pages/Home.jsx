@@ -1,13 +1,14 @@
-import React from "react";
-import UserStatus from "../components/UserStatus.jsx";
+import React, { useState } from "react";
+import UserGraph from "../components/UserGraph.jsx";
+import UserBalance from "../components/UserBalance.jsx";
 import TransactionList from "../components/TransactionList.jsx";
 
-export default function Home(){
+export default function Home() {
     return (
-        <div>
-            <UserStatus />
-
+        <>
+            <UserGraph />
+            <UserBalance />
             <TransactionList />
-        </div>
+        </>
     )
 }

@@ -9,7 +9,8 @@ const testUser = {
     password: 'test123',
     username: 'testuser',
     language: 'pt',
-    balance: 1000,
+    balance_usd: 0,
+    balance_btc: 0,
     birth_date: new Date('1990-01-01'), // Example birth date
     date_joined: new Date() // Current date as the date joined
 };
@@ -36,7 +37,8 @@ window.onload = async () => {
         stores.userStore.setEmail(user.email);
         stores.userStore.setUsername(user.username);
         stores.userStore.setLanguage(user.language);
-        stores.userStore.setBalance(user.balance);
+        stores.userStore.setBalanceBTC(user.balance_btc);
+        stores.userStore.setBalanceUSD(user.balance_usd);
         stores.userStore.setDateJoined(user.date_joined);
     }
 }
