@@ -4,6 +4,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from '../components/Layout.jsx';
 import Home from './Home.jsx';
 import '../assets/css/App.css';
+import Bot from './Bot.jsx';
+import Profile from './Profile.jsx';
+import Settings from './Settings.jsx';
+import News from './News.jsx';
 
 export default function App() {
     const [sidebarExpanded, setSidebarExpanded] = useState(false);
@@ -17,6 +21,10 @@ export default function App() {
             <Routes>
                 <Route path="/main_window" element={<Layout onSidebarHover={onSidebarHover} sidebarExpanded={sidebarExpanded}/>}>
                     <Route index element={<Home sidebarExpanded={sidebarExpanded} />} />
+                    <Route path='bot' element={<Bot />} />
+                    <Route path='news' element={<News />} />
+                    <Route path='profile' element={<Profile />} />
+                    <Route path='settings' element={<Settings />} />
                 </Route>
             </Routes>
         </Router>

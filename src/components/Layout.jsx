@@ -1,6 +1,5 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { translate } from "../translations/translate.js";
 import LanguagePopover from "./LanguagePopover.jsx";
 import Sidebar from "./Sidebar.jsx";
 
