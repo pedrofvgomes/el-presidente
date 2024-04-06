@@ -42,14 +42,13 @@ def weighted_signal_decision_with_close_and_performance(df):
     df_medium = medium_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_Medium'})
     df_low = low_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_Low'})
     
-    # Assume df_high, df_medium, df_low are generated here...
     combined_df = df_high[['Signal_High', 'real_price']].join([df_medium[['Signal_Medium']], df_low[['Signal_Low']]])
 
-    # Iterate over each set of 10 inputs
     for start in range(0, len(combined_df), 10):
         subset = combined_df.iloc[start:start+10]
         if len(subset) < 10:
             continue  # Skip if less than 10
+
         
         weighted_signal = (subset['Signal_High'].sum() * 0.2 + 
                            subset['Signal_Medium'].sum() * 0.3 +
@@ -72,7 +71,7 @@ def weighted_signal_decision_with_close_and_performance(df):
                     current_money -= buy_amount * last_price
                     print_open_position(start, 'Buy', last_price)
                     open_position, entry_price, last_action = 'Buy', last_price, 'open_buy'
-                
+                    
         elif weighted_signal < 0:
             if open_position != 'Sell':
                 # Potential sell signal

@@ -25,6 +25,7 @@ def main():
             # Execute your trading algorithm
             process_data()
 
+
             # Update the last checked size
             last_checked_size = len(df)
         
