@@ -32,7 +32,7 @@ const DailyObjective = observer(() => {
                 position: 'relative'
             }}
         >
-            <CircularWithValueLabel />
+            <CircularWithValueLabel value={current / stores.userStore.dailyObjective * 100} />
             <Typography sx={{ fontSize: '15px', fontWeight: 'bold' }}>
                 {translate("objective_today")}: {stores.userStore.dailyObjective}$
             </Typography>
@@ -74,15 +74,15 @@ CircularProgressWithLabel.propTypes = {
 };
 
 const CircularWithValueLabel = observer(() => {
-    const [progress, setProgress] = React.useState(null);
+    const [progress, setProgress] = React.useState(0); // Initialize progress state with 0
 
     useEffect(() => {
         const obj = stores.userStore.dailyObjective;
         const current = stores.transactionStore.transactions.filter(t => isToday(t.datetime)).map(t => t.amount).reduce((a, b) => a + b, 0)
-        setProgress(current / obj * 100 > 0 ? current / obj * 100 : 0)
+        const value = current / obj * 100;
+        setProgress(isNaN(value) ? 0 : value); // Ensure progress is not NaN, default to 0
     }, [stores.userStore.dailyObjective])
 
     return <CircularProgressWithLabel value={progress} />;
 });
-
 export default DailyObjective;
