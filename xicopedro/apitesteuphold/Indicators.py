@@ -12,107 +12,120 @@ df = pd.read_csv(file_path)
 
 # Convert 'real_price' column to a numpy array
 #df = df1['real_price'].values
-entry_value = 1000
-current_money = entry_value
-current_btc = 0
-risk = 0.01
-stop_loss = 50
 
+def delete_processed_lines(file_path, lines_to_delete=10):
+    """Deletes the first N lines of the CSV file after they have been processed."""
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-global open_position, entry_price, last_action, last_price
+    # Keep the header and the lines after the first N
+    with open(file_path, 'w') as file:
+        file.writelines(lines[:1] + lines[lines_to_delete + 1:])
 
-open_position = None  # Initialize outside the function to maintain state across function calls
+global open_position, entry_price, last_action
+global current_money, current_btc, entry_value, risk, stop_loss
+
+open_position = None
 entry_price = None
-last_action = None  # Track the last action ('open_buy', 'open_sell', 'close_buy', 'close_sell', None)
-
+last_action = None
+current_money = 10000  # Example starting money
+current_btc = 0  # Example starting BTC amount
+entry_value = 0
+risk = 0.01  # Example risk level
+stop_loss = 0.1  # Example stop loss level
 
 def weighted_signal_decision_with_close_and_performance(df):
     global open_position, entry_price, last_action
-    global current_money
-    global current_btc
-    global entry_value
-    global risk
-    global stop_loss
-    global last_price
-    """
-    Decides when to open (buy/sell) and close positions based on weighted signals from different strategies.
-    Additionally, prints the trade performance when a position is closed.
-    """
-    # Generate signal columns with the strategies
+    global current_money, current_btc, entry_value, risk, stop_loss
+    
     df_high = high_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_High'})
     df_medium = medium_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_Medium'})
     df_low = low_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_Low'})
     
-    combined_df = df_high[['Signal_High', 'real_price']].join([df_medium['Signal_Medium'], df_low['Signal_Low']])   
-    open_position = None  # Track the state of the position (None, 'Buy', 'Sell')
-    entry_price = None  # Track the entry price for calculating performance
-    
-    # Evaluate every set of 10 inputs
+    combined_df = df_high[['Signal_High', 'real_price']].join([df_medium[['Signal_Medium']], df_low[['Signal_Low']]])
+
     for start in range(0, len(combined_df), 10):
-        
         subset = combined_df.iloc[start:start+10]
         if len(subset) < 10:
-            print("Less than 10 entries remaining. Exiting loop..")
-            break  # Ignore sets with fewer than 10 entries
+            continue  # Skip if less than 10
+
         
         weighted_signal = (subset['Signal_High'].sum() * 0.2 + 
                            subset['Signal_Medium'].sum() * 0.3 +
                            subset['Signal_Low'].sum() * 0.5) / 10
         last_price = subset['real_price'].iloc[-1]
         
-        # Check for new buy/sell opportunities or to close existing positions
-        if weighted_signal > 0 and open_position != 'Buy':
-            if open_position == 'Sell':  # Close sell before opening buy
-                performance = entry_price - last_price
-                print_close_message(start, 'Sell', entry_price, last_price, performance)
+        if weighted_signal > 0:
+            if open_position != 'Buy':
+                # Potential buy signal
+                if open_position == 'Sell':
+                    # Close sell before buying
+                    sell_amount = current_btc
+                    current_money += sell_amount * last_price
+                    current_btc = 0
+                    print_close_position(start, 'Sell', entry_price, last_price)
+                # Check if we're not repeating the same action
+                if last_action != 'open_buy':
+                    buy_amount = (current_money * risk) / last_price
+                    current_btc += buy_amount
+                    current_money -= buy_amount * last_price
+                    print_open_position(start, 'Buy', last_price)
+                    open_position, entry_price, last_action = 'Buy', last_price, 'open_buy'
+                    
+        elif weighted_signal < 0:
+            if open_position != 'Sell':
+                # Potential sell signal
+                if open_position == 'Buy':
+                    # Close buy before selling
+                    buy_amount = current_btc
+                    current_money += buy_amount * last_price
+                    current_btc = 0
+                    print_close_position(start, 'Buy', entry_price, last_price)
+                # Check if we're not repeating the same action
+                if last_action != 'open_sell':
+                    sell_amount = (current_money / last_price) * risk
+                    current_money += sell_amount * last_price
+                    current_btc -= sell_amount
+                    print_open_position(start, 'Sell', last_price)
+                    open_position, entry_price, last_action = 'Sell', last_price, 'open_sell'
                 
-                open_position, entry_price = 'Buy', last_price
-                last_action = 'open_buy'
-            elif last_action != 'open_buy':  # Open buy if no open position
-                print_open_message(start, 'Buy', last_price)
-                open_position, entry_price, last_action = 'Buy', last_price, 'open_buy'
-            buy = (current_money * risk*(abs(stop_loss-(entry_value - current_money))))/(last_price*100)
-            
-            if buy * last_price > current_money:
-                buy = current_money
-            print("Bought:" , buy*last_price)
-            
-            current_btc += buy
-            current_money -= buy * last_price
-            print("Current BTC:", current_btc, " (",current_btc * last_price,")")
-            print("Current Money:", current_money)
-            entry_price = last_price
-                
-        elif weighted_signal < 0 and open_position != 'Sell':
-            if open_position == 'Buy':  # Close buy before opening sell
-                performance = last_price - entry_price
-                print_close_message(start, 'Buy', entry_price, last_price, performance)
-                open_position, entry_price = 'Sell', last_price
-                last_action = 'open_sell'
-            elif last_action != 'open_sell':  # Open sell if no open position
-                print_open_message(start, 'Sell', last_price)
-                open_position, entry_price, last_action = 'Sell', last_price, 'open_sell'
-            buy = (current_money * risk*(abs(stop_loss-(entry_value - current_money))))/(last_price*100)
-            if buy > current_btc:
-                buy = current_btc
-            print("Sold:" , buy*last_price)
-            current_btc -= buy
-            current_money += buy * last_price
-            print("Current BTC:", current_btc, " (",current_btc * last_price,")")
-            print("Current Money:", current_money)
-                
-        elif abs(weighted_signal) < 0.1 and open_position and last_action not in ['close_buy', 'close_sell']:
+        elif abs(weighted_signal) < 0.1 and open_position:
             # Close existing position due to weak signal
-            performance = (last_price - entry_price) if open_position == 'Buy' else (entry_price - last_price)
-            print_close_message(start, open_position, entry_price, last_price, performance)
-            open_position, entry_price, last_action = None, None, f"close_{open_position.lower()}"
+            if last_action not in ['close_buy', 'close_sell']:
+                performance = (last_price - entry_price) if open_position == 'Buy' else (entry_price - last_price)
+                print_close_position(start, open_position, entry_price, last_price)
+                open_position, entry_price, last_action = None, None, f"close_{open_position.lower()}"
+    delete_processed_lines(file_path)
+# Helper functions remain unchanged
 
-def print_open_message(index, position, price):
-    print(f"{position} opportunity detected at index {index+9}. Opening {position} at Price: {price:.2f}")
+        # Additional logic to handle closing positions on weak signals...
+        
+#def calculate_weighted_signal(df):
+    # Placeholder for your real weighted signal calculation
+ #   return df['Signal'].mean()  # Simplified example
 
-def print_close_message(index, position, entry, last, performance):
-    print(f"Closing {position} position detected at index {index+9}. Start Price: {entry:.2f}, Last Price: {last:.2f}, Performance: {performance:.2f}$")
+def process_data():
+    while True:
+        df = pd.read_csv(file_path)
+        
+        if len(df) < 11:  # Ensure there's more than just the header
+            continue  # Wait for more data
 
+        # Process the first 10 lines of data
+        subset = df.iloc[1:11]  # Skip header, process next 10
+        weighted_signal_decision_with_close_and_performance(subset)
+
+        # Function to delete the first 10 lines of actual data (after header)
+        delete_processed_lines(file_path, 10)
+
+        # Here you can add a delay or a condition to exit the loop
+
+def print_open_position(index, position, price):
+    print(f"Opening {position} with price {price:.2f}")
+
+def print_close_position(index, position, entry, last):
+    performance = (last - entry) if position == 'Buy' else (entry - last)
+    print(f"Closing {position} Performance: {performance:.2f}")
 
 
 def high_risk_scalping_strategy(df):
@@ -146,8 +159,6 @@ def low_risk_scalping_strategy(df):
     df['Signal'] = np.where(df['RSI'] > 40, np.where(df['RSI'] < 60, 1, -1), 0)
     return df
 
-weighted_signal_decision_with_close_and_performance(df)
-print("Total Profit:", (current_money + (current_btc * last_price)) - current_money)
 
 #print(high_risk_scalping_strategy(df))
 #print(medium_risk_scalping_strategy(df))

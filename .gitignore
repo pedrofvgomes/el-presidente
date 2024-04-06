@@ -91,5 +91,5 @@ typings/
 # Electron-Forge
 out/
 
+*pycache*
 
-xicopedro/apitesteuphold/__pycache__/
