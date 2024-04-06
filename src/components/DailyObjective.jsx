@@ -15,7 +15,7 @@ const DailyObjective = observer(() => {
         let tr = stores.transactionStore.transactions.filter(t => isToday(t.datetime));
         setTodayTransactions(tr)
 
-        setCurrent(tr.map(t => t.amount).reduce((a, b) => a + b, 0))
+        setCurrent(tr.map(t => t.profit_loss).reduce((a, b) => a + b, 0))
     }, []);
 
     return (
@@ -28,11 +28,28 @@ const DailyObjective = observer(() => {
                 padding: '10px 20px',
                 alignItems: 'center',
                 justifyContent: 'center',
-                position: 'relative'
+                position: 'relative',
+                transform: 'scale(1.0)',
+                transition: 'transform 0.1s ease-in-out',
             }}
+            onMouseEnter={e => { e.target.style.transform = 'scale(1.05)' }}
+            onMouseLeave={e => { e.target.style.transform = 'scale(1.0)' }}
         >
-            <CircularWithValueLabel value={current / stores.userStore.dailyObjective * 100} />
-            <Typography sx={{ fontSize: '15px', fontWeight: 'bold' }}>
+
+            <Typography sx={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '10px' }}>
+                {new Date().toLocaleDateString()}
+            </Typography>
+            <CircularWithValueLabel
+                value={
+                    current / stores.userStore.dailyObjective * 100 > 0
+                        && current / stores.userStore.dailyObjective * 100 < 100 ?
+                        current / stores.userStore.dailyObjective * 100 : 0
+                }
+            />
+            <Typography sx={{ fontSize: '15px', fontWeight: 'bold', marginTop: '10px', color: current >= 0 ? 'green' : 'red' }}>
+                {`${current > 0 && '+' || ''}${current?.toFixed(2)}$`}
+            </Typography>
+            <Typography sx={{ fontSize: '15px', fontWeight: 'bold', marginTop: '10px' }}>
                 {translate("objective_today")}: {stores.userStore.dailyObjective}$
             </Typography>
         </div>
@@ -56,7 +73,7 @@ function CircularProgressWithLabel(props) {
                 }}
             >
                 <Typography variant="caption" component="div" color="text.secondary">
-                    {`${Math.round(props.value)}%`}
+                    {`${props.value?.toFixed(1)}%`}
                 </Typography>
             </Box>
         </Box>
@@ -72,16 +89,7 @@ CircularProgressWithLabel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-const CircularWithValueLabel = observer(() => {
-    const [progress, setProgress] = React.useState(0); // Initialize progress state with 0
-
-    useEffect(() => {
-        const obj = stores.userStore.dailyObjective;
-        const current = stores.transactionStore.transactions.filter(t => isToday(t.datetime)).map(t => t.amount).reduce((a, b) => a + b, 0)
-        const value = current / obj * 100;
-        setProgress(isNaN(value) ? 0 : value); // Ensure progress is not NaN, default to 0
-    }, [stores.userStore.dailyObjective])
-
-    return <CircularProgressWithLabel value={progress} />;
+const CircularWithValueLabel = observer((props) => {
+    return <CircularProgressWithLabel value={props.value} />;
 });
 export default DailyObjective;

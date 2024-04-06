@@ -3,8 +3,11 @@ export const TransactionSchema = {
     properties: {
         id: 'int',
         datetime: 'date',
-        amount: 'double',
         type: 'string',
+        amount: 'double',
+        price: 'double',
+        profit_loss: 'double',
+        status: 'string',
         user: 'int',
     },
     primaryKey: 'id'

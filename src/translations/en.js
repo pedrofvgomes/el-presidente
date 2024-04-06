@@ -9,6 +9,14 @@ const en = {
     news: 'News',
     profile: 'Profile',
     settings: 'Settings',
+    time: 'Time',
+    type: 'Type',
+    amount: 'Amount',
+    price: 'Price',
+    profit_loss: 'Profit/Loss',
+    status: 'Status',
+    buy: 'Buy',
+    sell: 'Sell',
 };
 
 export default en;

@@ -9,6 +9,14 @@ const de = {
     news: 'Nachrichten',
     profile: 'Profil',
     settings: 'Einstellungen',
+    time: 'Zeit',
+    type: 'Art',
+    amount: 'Menge',
+    price: 'Preis',
+    profit_loss: 'Gewinn/Verlust',
+    status: 'Status',
+    buy: 'Kaufen',
+    sell: 'Verkaufen',
 };
 
 export default de;

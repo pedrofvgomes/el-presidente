@@ -3,9 +3,10 @@ import UserGraph from "../components/UserGraph.jsx";
 import UserBalance from "../components/UserWallet.jsx";
 import TransactionList from "../components/TransactionList.jsx";
 import DailyObjective from "../components/DailyObjective.jsx";
+import BTCGraph from "../components/BTCGraph.jsx";
 
 export default function Home(props) {
-    const [width, setWidth] = useState(props.sidebarExpanded ? 'calc(100% - 150px)' : 'calc(100% - 50px)');
+    const [width, setWidth] = useState(props.sidebarExpanded ? 'calc(100% - 200px)' : 'calc(100% - 80px)');
 
     useEffect(() => {
         setWidth(props.sidebarExpanded ? 'calc(100% - 150px)' : 'calc(100% - 50px)');
@@ -21,7 +22,7 @@ export default function Home(props) {
                 transition: 'width 0.3s ease-in-out',
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'space-evenly',
+                justifyContent: 'space-around',
             }}
         >
             {/* Still need to separate in two columns */}
@@ -29,7 +30,7 @@ export default function Home(props) {
                 style={{
                     flexDirection: 'column',
                     display: 'flex',
-                    width: '45%',
+                    width: '50%',
                     height: '90%',
                     justifyContent: 'space-evenly',
                     margin:'auto',
@@ -44,7 +45,7 @@ export default function Home(props) {
                 style={{
                     flexDirection: 'column',
                     display: 'flex',
-                    width: '45%',
+                    width: '25%',
                     height: '90%',
                     justifyContent: 'space-evenly',
                     margin:'auto',
@@ -52,6 +53,7 @@ export default function Home(props) {
                 }}
             >
                 <UserBalance />
+                <BTCGraph />
                 <DailyObjective />
             </div>
         </div>

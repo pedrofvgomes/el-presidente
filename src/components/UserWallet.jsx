@@ -29,20 +29,24 @@ const UserWallet = observer(() => {
                 padding: '10px 0px',
                 boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)',
                 display: 'inline-block',
-                textAlign:'center',
+                textAlign: 'center',
                 padding: '10px 20px',
                 alignItems: 'center',
                 justifyContent: 'center',
-                position: 'relative'
+                position: 'relative',
+                transform: 'scale(1.0)',
+                transition: 'transform 0.1s ease-in-out',
             }}
+            onMouseEnter={e => { e.target.style.transform = 'scale(1.05)' }}
+            onMouseLeave={e => { e.target.style.transform = 'scale(1.0)' }}
         >
-            <Typography sx={{ fontSize: '15px', fontWeight: 'bold' }}>
+            <Typography sx={{ fontSize: '18px', fontWeight: 'bold' }}>
                 {translate('wallet')}
             </Typography>
-            <Typography sx={{ fontSize: '18px' }}>
+            <Typography sx={{ fontSize: '20px' }}>
                 {`${btc?.toFixed(10)} BTC`}
             </Typography>
-            <Typography sx={{ fontSize: '15px' }}>
+            <Typography sx={{ fontSize: '18px' }}>
                 {`${convertedToUsd?.toFixed(2)}$`}
             </Typography>
             <svg style={{ position: 'absolute', top: 5, right: 5, width: '20px' }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4091.27 4091.73">

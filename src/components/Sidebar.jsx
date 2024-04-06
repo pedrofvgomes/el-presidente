@@ -56,7 +56,7 @@ export default function Sidebar(props) {
                 margin: 0,
                 height: '100%',
                 width: sidebarExpanded ? '150px' : '50px',
-                background: 'linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(2,0,36,1) 100%)',
+                background: 'linear-gradient(180deg, rgba(75, 103, 131, 1) 0%, rgba(2,0,36,1) 100%)',
                 zIndex: 1,
                 transition: 'width 0.3s ease-in-out',
                 display: 'flex',

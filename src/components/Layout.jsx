@@ -18,7 +18,7 @@ export default function Layout(props) {
 
             <LanguagePopover />
 
-            <Outlet />
+            <Outlet/>
         </div>
     );
 };

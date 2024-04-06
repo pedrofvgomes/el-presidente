@@ -7,13 +7,15 @@ class TransactionStore {
         makeAutoObservable(this);
     }
 
-    addTransaction(datetime, amount, type, user, code) {
+    addTransaction(datetime, type, amount, price, profit_loss, status, user) {
         this.transactions.push({
             datetime: datetime,
-            amount: amount,
             type: type,
-            user: user,
-            code: code
+            amount: amount,
+            price: price,
+            profit_loss: profit_loss,
+            status: status,
+            user: user
         });
     }
 }

@@ -9,6 +9,14 @@ const pt = {
     news: 'Notícias',
     profile: 'Perfil',
     settings: 'Configurações',
+    time: 'Hora',
+    type: 'Tipo',
+    amount: 'Quantidade',
+    price: 'Preço',
+    profit_loss: 'Lucro/Prejuízo',
+    status: 'Estado',
+    buy: 'Compra',
+    sell: 'Venda',
 };
 
 export default pt;
