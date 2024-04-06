@@ -90,3 +90,6 @@ typings/
 
 # Electron-Forge
 out/
+
+#Pycache
+/xicopedro/apitesteuphold/*__*
