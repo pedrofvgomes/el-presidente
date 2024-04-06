@@ -1,16 +1,23 @@
 import pandas as pd
 import talib
 import numpy as np
+from io import StringIO
 
 # Simulated loading your CSV data into a DataFrame
 file_path = 'market_data.csv'  # Make sure the file path is correct
 df = pd.read_csv(file_path)
-from io import StringIO
+
 
 # Create DataFrame from the data string
 
 # Convert 'real_price' column to a numpy array
 #df = df1['real_price'].values
+entry_value = 1000
+current_money = entry_value
+current_btc = 0
+risk = 0.01
+stop_loss = 50
+
 
 global open_position, entry_price, last_action
 
@@ -37,6 +44,11 @@ def weighted_signal_decision_with_close_and_performance(df):
     
     # Evaluate every set of 10 inputs
     for start in range(0, len(combined_df), 10):
+        global current_money
+        global current_btc
+        global entry_value
+        global risk
+        global stop_loss
         subset = combined_df.iloc[start:start+10]
         if len(subset) < 10:
             break  # Ignore sets with fewer than 10 entries
@@ -113,6 +125,8 @@ def low_risk_scalping_strategy(df):
     return df
 
 weighted_signal_decision_with_close_and_performance(df)
+print("Total Profit:", current_money - current_money)
+
 #print(high_risk_scalping_strategy(df))
 #print(medium_risk_scalping_strategy(df))
 #print(low_risk_scalping_strategy(df))
