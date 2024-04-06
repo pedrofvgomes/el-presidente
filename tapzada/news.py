@@ -30,26 +30,29 @@ class News():
         news = self.api.get_news(symbol=self.symbol, start=days_prior, end=today, limit=1000) 
         dates = [ev.__dict__["_raw"]["created_at"] for ev in news]
         news = [ev.__dict__["_raw"]["headline"] for ev in news]
-        probability, sentiment, sentiment_list = estimate_sentiment(news)
-        sentiment_data = list(zip(dates, sentiment_list))
+        probability, sentiment, sentiment_list, prob_list = estimate_sentiment(news)
+        sentiment_data = list(zip(dates, sentiment_list, prob_list))
         sorted_sentiment_data = sorted(sentiment_data, key=lambda x: x[0])
         sorted_dates = [data[0] for data in sorted_sentiment_data][1:]
         sorted_sentiments = [data[1] for data in sorted_sentiment_data][1:]
-        return probability, sentiment, sorted_sentiments, sorted_dates
+        sorted_probabilities = [data[2] for data in sorted_sentiment_data][1:]
+        return probability, sentiment, sorted_sentiments, sorted_dates, sorted_probabilities
 
     def collect_sentiment_data(self, days=3):
         sentiment_data = []
-        _, _, sentiments, dates = self.get_sentiment(days=days)
-        for date, sent in zip(dates, sentiments):
-            sentiment_data.append((date, sent))
+        _, _, sentiments, dates, probs = self.get_sentiment(days=days)
+        for date, sent, prob in zip(dates, sentiments, probs):
+            sentiment_data.append((date, sent, prob))
         return sentiment_data
 
     def plot_sentiment_analysis(self, sentiment_data):
         dates = [datetime.strptime(data[0][:10], '%Y-%m-%d') for data in sentiment_data]
         sentiments = [1 if data[1] == "positive" else -1 if data[1] == "negative" else 0 for data in sentiment_data]
+        probabilities = [data[2] for data in sentiment_data]
+        
         sentiments_by_date = defaultdict(list)
-        for date, sentiment in zip(dates, sentiments):
-            sentiments_by_date[date.date()].append(sentiment)
+        for date, sentiment, probability in zip(dates, sentiments, probabilities):
+            sentiments_by_date[date.date()].append(sentiment * probability)
         mean_sentiments = {}
         for date, sent_list in sentiments_by_date.items():
             mean_sentiments[date] = sum(sent_list) / len(sent_list)
@@ -73,7 +76,6 @@ class News():
         plt.grid(False)
         plt.tight_layout()
         plt.savefig('sentiment_analysis.png')
-        plt.show()
         print(mean_sentiments)
 
 news = News()

@@ -11,6 +11,7 @@ labels = ["positive", "negative", "neutral"]
 
 def estimate_sentiment(news):
     sentiment_list = []  # Initialize an empty list to store sentiments for each headline
+    probability_list = []  # Initialize an empty list to store probabilities for each headline
     if news:
         for headline in news:
             tokens = tokenizer(headline, return_tensors="pt", padding=True).to(device)
@@ -19,10 +20,11 @@ def estimate_sentiment(news):
             probability = result[torch.argmax(result)]
             sentiment = labels[torch.argmax(result)]
             sentiment_list.append(sentiment)  # Append the sentiment to the list
+            probability_list.append(probability.item())
             
     else:
         sentiment_list.append(labels[-1])  # Default value if no headlines are available
-    return probability, sentiment, sentiment_list
+    return probability, sentiment, sentiment_list, probability_list
 
 
 
