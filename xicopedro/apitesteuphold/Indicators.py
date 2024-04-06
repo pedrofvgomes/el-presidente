@@ -1,16 +1,23 @@
 import pandas as pd
 import talib
 import numpy as np
+from io import StringIO
 
 # Simulated loading your CSV data into a DataFrame
 file_path = 'market_data.csv'  # Make sure the file path is correct
 df = pd.read_csv(file_path)
-from io import StringIO
+
 
 # Create DataFrame from the data string
 
 # Convert 'real_price' column to a numpy array
 #df = df1['real_price'].values
+entry_value = 1000
+current_money = entry_value
+current_btc = 0
+risk = 0.01
+stop_loss = 50
+
 
 def weighted_signal_decision_with_close_and_performance(df):
     """
@@ -29,6 +36,11 @@ def weighted_signal_decision_with_close_and_performance(df):
     
     # Evaluate every set of 10 inputs
     for start in range(0, len(combined_df), 10):
+        global current_money
+        global current_btc
+        global entry_value
+        global risk
+        global stop_loss
         subset = combined_df.iloc[start:start+10]
         if len(subset) < 10:
             break  # Ignore the last set if it has fewer than 10 entries
@@ -42,12 +54,23 @@ def weighted_signal_decision_with_close_and_performance(df):
         # Detect buy/sell opportunity
         if weighted_signal > 0 and open_position != 'Buy':
             print(f"Buy opportunity detected at index {start+9}. Consider opening or flipping a position.")
-            open_position = 'Buy'
+            
+            buy = (current_money * risk*(abs(stop_loss-(entry_value - current_money))))/(last_price*100)
+            print("Bought:" , buy*last_price)
+            current_btc += buy
+            current_money -= buy * last_price
             entry_price = last_price  # Set entry price for performance calculation
             
         elif weighted_signal < 0 and open_position != 'Sell':
             print(f"Sell opportunity detected at index {start+9}. Consider opening or flipping a position.")
             open_position = 'Sell'
+            
+            buy = (current_money * risk*(abs(stop_loss-(entry_value - current_money))))/(last_price*100)
+            print("Sold:" , buy*last_price)
+            if buy > current_btc:
+                buy = current_btc
+            current_money -= buy
+            current_money += buy * last_price
             entry_price = last_price  # Set entry price for performance calculation
             
         # Advice on closing positions: looking for a weak signal as an indicator to close
@@ -56,6 +79,7 @@ def weighted_signal_decision_with_close_and_performance(df):
             performance = ((last_price - entry_price))
             if open_position == "Sell":
                 performance = -performance
+            
             print(f"Close {open_position} position detected at index {start+9}. Start Price: {entry_price:.2f}, Last Price: {last_price:.2f}, Performance: {performance:.2f}$")
             open_position = None  # Reset the open position status
             entry_price = None  # Reset entry price
@@ -95,6 +119,8 @@ def low_risk_scalping_strategy(df):
     return df
 
 weighted_signal_decision_with_close_and_performance(df)
+print("Total Profit:", current_money - current_money)
+
 #print(high_risk_scalping_strategy(df))
 #print(medium_risk_scalping_strategy(df))
 #print(low_risk_scalping_strategy(df))
