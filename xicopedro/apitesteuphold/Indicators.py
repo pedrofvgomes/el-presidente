@@ -12,7 +12,15 @@ from io import StringIO
 # Convert 'real_price' column to a numpy array
 #df = df1['real_price'].values
 
+global open_position, entry_price, last_action
+
+open_position = None  # Initialize outside the function to maintain state across function calls
+entry_price = None
+last_action = None  # Track the last action ('open_buy', 'open_sell', 'close_buy', 'close_sell', None)
+
+
 def weighted_signal_decision_with_close_and_performance(df):
+    global open_position, entry_price, last_action
     """
     Decides when to open (buy/sell) and close positions based on weighted signals from different strategies.
     Additionally, prints the trade performance when a position is closed.
@@ -31,35 +39,45 @@ def weighted_signal_decision_with_close_and_performance(df):
     for start in range(0, len(combined_df), 10):
         subset = combined_df.iloc[start:start+10]
         if len(subset) < 10:
-            break  # Ignore the last set if it has fewer than 10 entries
+            break  # Ignore sets with fewer than 10 entries
         
         weighted_signal = (subset['Signal_High'].sum() * 0.2 + 
                            subset['Signal_Medium'].sum() * 0.3 +
                            subset['Signal_Low'].sum() * 0.5) / 10
+        last_price = subset['real_price'].iloc[-1]
         
-        last_price = subset['real_price'].iloc[-1]  # Last price in the subset
-        
-        # Detect buy/sell opportunity
+        # Check for new buy/sell opportunities or to close existing positions
         if weighted_signal > 0 and open_position != 'Buy':
-            print(f"Buy opportunity detected at index {start+9}. Consider opening or flipping a position.")
-            open_position = 'Buy'
-            entry_price = last_price  # Set entry price for performance calculation
-            
+            if open_position == 'Sell':  # Close sell before opening buy
+                performance = entry_price - last_price
+                print_close_message(start, 'Sell', entry_price, last_price, performance)
+                open_position, entry_price = 'Buy', last_price
+                last_action = 'open_buy'
+            elif last_action != 'open_buy':  # Open buy if no open position
+                print_open_message(start, 'Buy', last_price)
+                open_position, entry_price, last_action = 'Buy', last_price, 'open_buy'
+                
         elif weighted_signal < 0 and open_position != 'Sell':
-            print(f"Sell opportunity detected at index {start+9}. Consider opening or flipping a position.")
-            open_position = 'Sell'
-            entry_price = last_price  # Set entry price for performance calculation
-            
-        # Advice on closing positions: looking for a weak signal as an indicator to close
-        if abs(weighted_signal) < 0.1 and open_position:  # Threshold for closing can be adjusted
-            # Calculate performance
-            performance = ((last_price - entry_price))
-            if open_position == "Sell":
-                performance = -performance
-            print(f"Close {open_position} position detected at index {start+9}. Start Price: {entry_price:.2f}, Last Price: {last_price:.2f}, Performance: {performance:.2f}$")
-            open_position = None  # Reset the open position status
-            entry_price = None  # Reset entry price
+            if open_position == 'Buy':  # Close buy before opening sell
+                performance = last_price - entry_price
+                print_close_message(start, 'Buy', entry_price, last_price, performance)
+                open_position, entry_price = 'Sell', last_price
+                last_action = 'open_sell'
+            elif last_action != 'open_sell':  # Open sell if no open position
+                print_open_message(start, 'Sell', last_price)
+                open_position, entry_price, last_action = 'Sell', last_price, 'open_sell'
+                
+        elif abs(weighted_signal) < 0.1 and open_position and last_action not in ['close_buy', 'close_sell']:
+            # Close existing position due to weak signal
+            performance = (last_price - entry_price) if open_position == 'Buy' else (entry_price - last_price)
+            print_close_message(start, open_position, entry_price, last_price, performance)
+            open_position, entry_price, last_action = None, None, f"close_{open_position.lower()}"
 
+def print_open_message(index, position, price):
+    print(f"{position} opportunity detected at index {index+9}. Opening {position} at Price: {price:.2f}")
+
+def print_close_message(index, position, entry, last, performance):
+    print(f"Closing {position} position detected at index {index+9}. Start Price: {entry:.2f}, Last Price: {last:.2f}, Performance: {performance:.2f}$")
 
 
 
