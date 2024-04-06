@@ -9,7 +9,7 @@ export default function Sidebar(props) {
 
     const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
-    const [logo, setLogo] = useState('img/brunix-compact.png');
+    const [logo, setLogo] = useState('/img/brunix-compact.png');
 
     let logoStyle = {
         marginTop: '10px',
@@ -32,7 +32,7 @@ export default function Sidebar(props) {
 
         props.onSidebarHover();
 
-        setLogo('img/brunix.png');
+        setLogo('/img/brunix.png');
         setShowDescription(true);
     }
 
@@ -42,7 +42,7 @@ export default function Sidebar(props) {
         props.onSidebarHover();
 
         setTimeout(() => {
-            setLogo('img/brunix-compact.png');
+            setLogo('/img/brunix-compact.png');
             setShowDescription(false);
         }, 300);
     }
