@@ -23,7 +23,7 @@ def main():
         # Check if 10 new prices have been added since last check
         if len(df) - last_checked_size >= 10:
             # Execute your trading algorithm
-            weighted_signal_decision_with_close_and_performance(df)
+            weighted_signal_decision_with_close_and_performance(df.tail(10))
 
             # Update the last checked size
             last_checked_size = len(df)

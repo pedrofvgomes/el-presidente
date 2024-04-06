@@ -43,8 +43,7 @@ def weighted_signal_decision_with_close_and_performance(df):
     df_medium = medium_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_Medium'})
     df_low = low_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_Low'})
     
-    combined_df = df_high[['Signal_High', 'real_price']].join([df_medium['Signal_Medium'], df_low['Signal_Low']])
-    
+    combined_df = df_high[['Signal_High', 'real_price']].join([df_medium['Signal_Medium'], df_low['Signal_Low']])   
     open_position = None  # Track the state of the position (None, 'Buy', 'Sell')
     entry_price = None  # Track the entry price for calculating performance
     
@@ -53,6 +52,7 @@ def weighted_signal_decision_with_close_and_performance(df):
         
         subset = combined_df.iloc[start:start+10]
         if len(subset) < 10:
+            print("Less than 10 entries remaining. Exiting loop..")
             break  # Ignore sets with fewer than 10 entries
         
         weighted_signal = (subset['Signal_High'].sum() * 0.2 + 
@@ -72,11 +72,15 @@ def weighted_signal_decision_with_close_and_performance(df):
                 print_open_message(start, 'Buy', last_price)
                 open_position, entry_price, last_action = 'Buy', last_price, 'open_buy'
             buy = (current_money * risk*(abs(stop_loss-(entry_value - current_money))))/(last_price*100)
-            print("Bought:" , buy*last_price)
+            
             if buy * last_price > current_money:
                 buy = current_money
+            print("Bought:" , buy*last_price)
+            
             current_btc += buy
             current_money -= buy * last_price
+            print("Current BTC:", current_btc, " (",current_btc * last_price,")")
+            print("Current Money:", current_money)
             entry_price = last_price
                 
         elif weighted_signal < 0 and open_position != 'Sell':
@@ -89,11 +93,14 @@ def weighted_signal_decision_with_close_and_performance(df):
                 print_open_message(start, 'Sell', last_price)
                 open_position, entry_price, last_action = 'Sell', last_price, 'open_sell'
             buy = (current_money * risk*(abs(stop_loss-(entry_value - current_money))))/(last_price*100)
-            print("Sold:" , buy*last_price)
             if buy > current_btc:
                 buy = current_btc
-            current_money -= buy
+            print("Sold:" , buy*last_price)
+            
+            current_btc -= buy
             current_money += buy * last_price
+            print("Current BTC:", current_btc, " (",current_btc * last_price,")")
+            print("Current Money:", current_money)
                 
         elif abs(weighted_signal) < 0.1 and open_position and last_action not in ['close_buy', 'close_sell']:
             # Close existing position due to weak signal
