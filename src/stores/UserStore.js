@@ -9,6 +9,7 @@ class UserStore {
     balanceUSD = null;
     balanceBTC = null;
     dateJoined = null;
+    dailyObjective = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -32,8 +33,6 @@ class UserStore {
 
     setLanguage(language) {
         this.language = language;
-
-        console.log('Language set to: ' + language);
     }
 
     setBalanceUSD(balanceUSD) {
@@ -46,6 +45,10 @@ class UserStore {
 
     setDateJoined(dateJoined) {
         this.dateJoined = dateJoined;
+    }
+
+    setDailyObjective(dailyObjective) {
+        this.dailyObjective = dailyObjective;
     }
 }
 

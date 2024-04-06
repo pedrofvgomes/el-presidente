@@ -11,5 +11,6 @@ export const UserSchema = {
         balance_btc: 'double',
         birth_date: 'date',
         date_joined: 'date',
+        daily_objective: 'double',
     },
 };

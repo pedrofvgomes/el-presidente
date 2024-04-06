@@ -1,5 +1,21 @@
-import {makeAutoObservable} from 'mobx';
+import { makeAutoObservable } from 'mobx';
 
-export class TransactionStore {
-    
+class TransactionStore {
+    transactions = [];
+
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    addTransaction(datetime, amount, type, user, code) {
+        this.transactions.push({
+            datetime: datetime,
+            amount: amount,
+            type: type,
+            user: user,
+            code: code
+        });
+    }
 }
+
+export default TransactionStore;

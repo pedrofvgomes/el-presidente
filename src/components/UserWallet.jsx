@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import { Typography } from "@mui/material";
 import { stores } from "../stores";
 
-const UserBalance = observer(() => {
+const UserWallet = observer(() => {
     const [btc, setBtc] = React.useState(0);
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const UserBalance = observer(() => {
             }}
         >
             <Typography sx={{ fontSize: '15px', fontWeight: 'bold' }}>
-                {translate('current_balance')}
+                {translate('wallet')}
             </Typography>
             <Typography sx={{ fontSize: '18px' }}>
                 {`${btc?.toFixed(10)} BTC`}
@@ -53,4 +53,4 @@ const UserBalance = observer(() => {
     )
 });
 
-export default UserBalance;
+export default UserWallet;

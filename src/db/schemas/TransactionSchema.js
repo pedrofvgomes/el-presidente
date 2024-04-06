@@ -5,7 +5,7 @@ export const TransactionSchema = {
         datetime: 'date',
         amount: 'double',
         type: 'string',
-        user: 'User',
+        user: 'int',
     },
     primaryKey: 'id'
 };

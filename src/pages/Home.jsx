@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import UserGraph from "../components/UserGraph.jsx";
-import UserBalance from "../components/UserBalance.jsx";
+import UserBalance from "../components/UserWallet.jsx";
 import TransactionList from "../components/TransactionList.jsx";
+import DailyObjective from "../components/DailyObjective.jsx";
 
 export default function Home() {
     return (
@@ -9,6 +10,7 @@ export default function Home() {
             <UserGraph />
             <UserBalance />
             <TransactionList />
+            <DailyObjective />
         </>
     )
 }

@@ -1,3 +1,4 @@
+import TransactionStore from "./TransactionStore";
 import UserStore from "./UserStore";
 
 export function resetStores(){
@@ -7,5 +8,6 @@ export function resetStores(){
 }
 
 export const stores = {
-    userStore: new UserStore()
+    userStore: new UserStore(),
+    transactionStore: new TransactionStore(),
 };
