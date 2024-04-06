@@ -19,7 +19,7 @@ risk = 0.01
 stop_loss = 50
 
 
-global open_position, entry_price, last_action
+global open_position, entry_price, last_action, last_price
 
 open_position = None  # Initialize outside the function to maintain state across function calls
 entry_price = None
@@ -28,6 +28,12 @@ last_action = None  # Track the last action ('open_buy', 'open_sell', 'close_buy
 
 def weighted_signal_decision_with_close_and_performance(df):
     global open_position, entry_price, last_action
+    global current_money
+    global current_btc
+    global entry_value
+    global risk
+    global stop_loss
+    global last_price
     """
     Decides when to open (buy/sell) and close positions based on weighted signals from different strategies.
     Additionally, prints the trade performance when a position is closed.
@@ -44,11 +50,7 @@ def weighted_signal_decision_with_close_and_performance(df):
     
     # Evaluate every set of 10 inputs
     for start in range(0, len(combined_df), 10):
-        global current_money
-        global current_btc
-        global entry_value
-        global risk
-        global stop_loss
+        
         subset = combined_df.iloc[start:start+10]
         if len(subset) < 10:
             break  # Ignore sets with fewer than 10 entries
@@ -63,11 +65,19 @@ def weighted_signal_decision_with_close_and_performance(df):
             if open_position == 'Sell':  # Close sell before opening buy
                 performance = entry_price - last_price
                 print_close_message(start, 'Sell', entry_price, last_price, performance)
+                
                 open_position, entry_price = 'Buy', last_price
                 last_action = 'open_buy'
             elif last_action != 'open_buy':  # Open buy if no open position
                 print_open_message(start, 'Buy', last_price)
                 open_position, entry_price, last_action = 'Buy', last_price, 'open_buy'
+            buy = (current_money * risk*(abs(stop_loss-(entry_value - current_money))))/(last_price*100)
+            print("Bought:" , buy*last_price)
+            if buy * last_price > current_money:
+                buy = current_money
+            current_btc += buy
+            current_money -= buy * last_price
+            entry_price = last_price
                 
         elif weighted_signal < 0 and open_position != 'Sell':
             if open_position == 'Buy':  # Close buy before opening sell
@@ -78,6 +88,12 @@ def weighted_signal_decision_with_close_and_performance(df):
             elif last_action != 'open_sell':  # Open sell if no open position
                 print_open_message(start, 'Sell', last_price)
                 open_position, entry_price, last_action = 'Sell', last_price, 'open_sell'
+            buy = (current_money * risk*(abs(stop_loss-(entry_value - current_money))))/(last_price*100)
+            print("Sold:" , buy*last_price)
+            if buy > current_btc:
+                buy = current_btc
+            current_money -= buy
+            current_money += buy * last_price
                 
         elif abs(weighted_signal) < 0.1 and open_position and last_action not in ['close_buy', 'close_sell']:
             # Close existing position due to weak signal
@@ -125,7 +141,7 @@ def low_risk_scalping_strategy(df):
     return df
 
 weighted_signal_decision_with_close_and_performance(df)
-print("Total Profit:", current_money - current_money)
+print("Total Profit:", (current_money + (current_btc * last_price)) - current_money)
 
 #print(high_risk_scalping_strategy(df))
 #print(medium_risk_scalping_strategy(df))
