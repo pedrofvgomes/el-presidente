@@ -5,6 +5,10 @@ import axios from 'axios';
 
 export default function Bot(props) {
     const [width, setWidth] = useState(props.sidebarExpanded ? 'calc(100% - 200px)' : 'calc(100% - 80px)');
+    const [risk, setRisk] = useState(0);
+    const [rsi, setRsi] = useState(0);
+    const [emaFast, setEmaFast] = useState(0);
+    const [emaSlow, setEmaSlow] = useState(0);
 
     useEffect(() => {
         setWidth(props.sidebarExpanded ? 'calc(100% - 150px)' : 'calc(100% - 50px)');
@@ -38,11 +42,9 @@ export default function Bot(props) {
             <div style={{ flexDirection: 'column', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography style={{ textAlign: 'center', color: 'rgba(50, 76, 100, 1)', position: 'absolute', top: '15px', fontSize: '25px', fontWeight: 'bold' }}>{translate('bot')}</Typography>
 
-                <ul style={{ listStyleType: 'none', padding: 0 }}>
-                    <li style={{ marginBottom: '20px' }}>{translate('bot_description')}</li>
-                    <li style={{ marginBottom: '20px' }}>{translate('bot_description_2')}</li>
-                    <li style={{ marginBottom: '20px' }}>{translate('bot_description_3')}</li>
-                </ul>
+                <div style={{ flexDirection: 'column', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px', backgroundColor: 'white', boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)', padding: '20px', borderRadius: '10px' }}>
+
+                </div>
 
                 <button
                     style={{
