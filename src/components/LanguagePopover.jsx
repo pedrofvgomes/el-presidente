@@ -117,6 +117,11 @@ const LANGUAGES = [
         value: 'de',
         label: 'Deutsch',
         icon: '/img/de.png',
+    },
+    {
+        value: 'ch',
+        label: '中文',
+        icon: '/img/ch.png',
     }
 ]
 

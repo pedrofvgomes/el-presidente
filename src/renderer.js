@@ -1,6 +1,7 @@
 import { transaction } from 'mobx';
 import './pages/App.jsx';
 import { stores } from './stores/index.js';
+import axios from 'axios';
 
 const testUser = {
     id: 1,
@@ -188,3 +189,9 @@ window.onload = async () => {
     stores.userStore.setDateJoined(testUser.date_joined);
     stores.userStore.setDailyObjective(testUser.daily_objective);
 }
+
+const apiResponse = await axios.get("http://127.0.0.1:8000/brunixAPI/get_val_from/?input=oi");
+
+const apiResponseData = apiResponse.data;
+
+console.log(apiResponseData);

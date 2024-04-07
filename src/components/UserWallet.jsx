@@ -34,11 +34,7 @@ const UserWallet = observer(() => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
-                transform: 'scale(1.0)',
-                transition: 'transform 0.1s ease-in-out',
             }}
-            onMouseEnter={e => { e.target.style.transform = 'scale(1.05)' }}
-            onMouseLeave={e => { e.target.style.transform = 'scale(1.0)' }}
         >
             <Typography sx={{ fontSize: '18px', fontWeight: 'bold' }}>
                 {translate('wallet')}
