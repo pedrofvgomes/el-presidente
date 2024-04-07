@@ -14,7 +14,7 @@ def execute_trading_algorithm(df):
 
 def main():
     last_checked_size = 0  # Keep track of the last checked size of the CSV file
-    csv_file_path = 'market_data.csv'  # Path to your CSV file
+    csv_file_path = './csv/market_data.csv'  # Path to your CSV file
 
     while True:
         # Load the updated DataFrame

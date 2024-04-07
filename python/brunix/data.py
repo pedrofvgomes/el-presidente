@@ -19,7 +19,7 @@ def data_to_csv():
     # Insert the DateTime column at the first position
     df.insert(0, 'DateTime', now)
     
-    file_path = 'market_data.csv'
+    file_path = './csv/market_data.csv'
 
     # Check if the file exists to determine if the header should be written
     if os.path.exists(file_path):

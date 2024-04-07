@@ -37,7 +37,7 @@ class News():
         return probability, sentiment, sorted_sentiment_data
 
 
-    def plot_sentiment_analysis(self, sentiment_data, filename='sentiment_data.csv'):
+    def plot_sentiment_analysis(self, sentiment_data, filename='./csv/sentiment_data.csv'):
 
         headlines = [data[0] for data in sentiment_data]
         dates = [datetime.strptime(data[1][:10], '%Y-%m-%d') for data in sentiment_data]
@@ -76,7 +76,16 @@ class News():
         plt.grid(False)
         plt.tight_layout()
         plt.savefig('sentiment_analysis.png')
-        print(mean_sentiments)
+
+
+    def get_news_factor(self, days=5):
+        _, _, sentiment_data = self.get_sentiment(days=days)
+        sentiments = [1 if data[2] == "positive" else -1 if data[2] == "negative" else 0 for data in sentiment_data]
+        probabilities = [data[3] for data in sentiment_data]
+
+        news_factor = sum([sentiment * prob for sentiment, prob in zip(sentiments, probabilities)]) / len(sentiments)
+        return news_factor
+
 
 news = News()
 _, _, sentiment_data = news.get_sentiment(days=20)

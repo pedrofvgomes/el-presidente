@@ -2,10 +2,13 @@ import pandas as pd
 import talib
 import numpy as np
 from io import StringIO
+from news import News
+
 
 # Simulated loading your CSV data into a DataFrame
-file_path = 'market_data.csv'  # Make sure the file path is correct
+file_path = './csv/market_data.csv'  # Make sure the file path is correct
 df = pd.read_csv(file_path)
+news = News()
 
 
 # Create DataFrame from the data string
@@ -53,8 +56,12 @@ def weighted_signal_decision_with_close_and_performance(df):
 
         
         weighted_signal = (subset['Signal_High'].sum() * 0.2 + 
-                           subset['Signal_Medium'].sum() * 0.3 +
-                           subset['Signal_Low'].sum() * 0.5) / 10
+                   subset['Signal_Medium'].sum() * 0.3 +
+                   subset['Signal_Low'].sum() * 0.5) / 10
+        
+        news_factor = news.get_news_factor(days=5)
+        weighted_signal_with_news = weighted_signal + ((0.2 * news_factor) / 10)
+
         last_price = subset['real_price'].iloc[-1]
         
         if weighted_signal > 0:
