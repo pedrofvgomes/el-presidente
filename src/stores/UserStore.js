@@ -33,6 +33,8 @@ class UserStore {
 
     setLanguage(language) {
         this.language = language;
+
+        window.api.update('User', 'language', language);
     }
 
     setBalanceUSD(balanceUSD) {

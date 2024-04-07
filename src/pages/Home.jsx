@@ -4,6 +4,7 @@ import UserBalance from "../components/UserWallet.jsx";
 import TransactionList from "../components/TransactionList.jsx";
 import DailyObjective from "../components/DailyObjective.jsx";
 import BTCGraph from "../components/BTCGraph.jsx";
+import { Typography } from "@mui/material";
 
 export default function Home(props) {
     const [width, setWidth] = useState(props.sidebarExpanded ? 'calc(100% - 200px)' : 'calc(100% - 80px)');
@@ -25,6 +26,7 @@ export default function Home(props) {
                 justifyContent: 'space-around',
             }}
         >
+            <Typography style={{ color: 'rgba(50, 76, 100, 1)', position: 'absolute', top: '15px', fontSize: '25px', fontWeight: 'bold' }}>Dashboard</Typography>
             {/* Still need to separate in two columns */}
             <div
                 style={{
@@ -33,8 +35,8 @@ export default function Home(props) {
                     width: '50%',
                     height: '90%',
                     justifyContent: 'space-evenly',
-                    margin:'auto',
-                    alignItems:'center'
+                    margin: 'auto',
+                    alignItems: 'center'
                 }}
             >
                 <UserGraph />
@@ -48,7 +50,7 @@ export default function Home(props) {
                     width: '25%',
                     height: '90%',
                     justifyContent: 'space-evenly',
-                    margin:'auto',
+                    margin: 'auto',
                     alignItems: 'center'
                 }}
             >
