@@ -24,3 +24,8 @@ User Interface (UI):
 
 Brunix features a user-friendly interface built using Electron, Webpack, and React, with a backend built using Django, where the algorithms run on.
 The UI provides users with easy access to key features, including real-time price data, trading signals, and configuration options.
+
+# Instructions
+On a terminal window, while on the project's root directory run <code>python python/brunix/manage.py makemigrations</code> then <code>python python/brunix/manage.py migrate</code> and finally <code>python python/brunix/manage.py runserver</code>. This starts the backend server.
+
+On another terminal, without closing the previous one, and also on the project's root directory run <code>npm install</code> and <code>npm start</code>.
