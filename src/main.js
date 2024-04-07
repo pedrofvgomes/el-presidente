@@ -3,17 +3,21 @@ const path = require('node:path');
 const isDev = require('electron-is-dev');
 import Realm from 'realm';
 import schemas from './db/schemas';
+import { spawn } from 'child_process';
 
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
 const createWindow = () => {
+  startDjangoServer();
+
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 800,
     minHeight: 600,
+    icon: path.join(__dirname, '../renderer/img/brunix-compact.ico'),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
@@ -132,3 +136,27 @@ function update(realmObject, field, value) {
 ipcMain.handle('update', async (event, realmObject, field, value) => {
   return update(realmObject, field, value);
 });
+
+/**
+ * DJANGO
+ */
+const startDjangoServer = () => {
+  const djangoBackend = spawn(`python\\brunixEnv\\Scripts\\python.exe`,
+    ['python\\brunix\\manage.py', 'runserver', '--noreload']);
+  djangoBackend.stdout.on('data', data => {
+    console.log(`stdout:\n${data}`);
+  });
+  djangoBackend.stderr.on('data', data => {
+    console.log(`stderr: ${data}`);
+  });
+  djangoBackend.on('error', (error) => {
+    console.log(`error: ${error.message}`);
+  });
+  djangoBackend.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+  djangoBackend.on('message', (message) => {
+    console.log(`message:\n${message}`);
+  });
+  return djangoBackend;
+}
