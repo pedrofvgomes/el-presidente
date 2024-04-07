@@ -12,6 +12,7 @@ def execute_trading_algorithm(df):
     # Implement the weighted_signal_decision_with_close_and_performance logic here
     # and make your trading decision based on the output
 
+
 def main():
     last_checked_size = 0  # Keep track of the last checked size of the CSV file
     csv_file_path = 'market_data.csv'  # Path to your CSV file

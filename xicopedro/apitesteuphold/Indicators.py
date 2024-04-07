@@ -2,6 +2,9 @@ import pandas as pd
 import talib
 import numpy as np
 from io import StringIO
+import matplotlib.pyplot as plt
+
+
 
 # Simulated loading your CSV data into a DataFrame
 file_path = 'market_data.csv'  # Make sure the file path is correct
@@ -33,6 +36,22 @@ current_btc = 0  # Example starting BTC amount
 initial_value = 10000
 risk = 0.01  # Example risk level
 stop_loss = 0.1  # Example stop loss level
+
+timestamps = []
+profit_values = []
+
+timestamps.append(pd.Timestamp.now())
+profit_values.append(0)
+
+
+def plot_performance(timestamps, values):
+    plt.plot(timestamps, values)
+    plt.xlabel('Timestamp')
+    plt.ylabel('Value')
+    plt.title('Portfolio Performance')
+    plt.grid(False)
+    plt.tight_layout()
+    plt.savefig('current_money.png')
 
 def weighted_signal_decision_with_close_and_performance(df):
     global open_position, entry_price, last_action
@@ -66,6 +85,10 @@ def weighted_signal_decision_with_close_and_performance(df):
                     current_btc = 0
                     current_money += sell_amount * last_price
                     print_close_position(start, 'Sell', entry_price, last_price)
+
+                    profit_values.append(current_money - initial_value)
+                    timestamps.append(pd.Timestamp.now())
+
                 # Check if we're not repeating the same action
                 if last_action != 'open_buy':
                     buy_amount = (current_money * risk) / last_price
@@ -83,11 +106,17 @@ def weighted_signal_decision_with_close_and_performance(df):
                     current_btc = 0
                     current_money += buy_amount * last_price
                     print_close_position(start, 'Buy', entry_price, last_price)
+
+                    profit_values.append(current_money - initial_value)
+                    timestamps.append(pd.Timestamp.now())
+
                 # Check if we're not repeating the same action
                 if last_action != 'open_sell':
                     sell_amount = (current_money / last_price) * risk
                     current_money += sell_amount * last_price
                     current_btc -= sell_amount
+
+
                     print_open_position(start, 'Sell', last_price)
                     open_position, entry_price, last_action = 'Sell', last_price, 'open_sell'
                 
@@ -99,6 +128,10 @@ def weighted_signal_decision_with_close_and_performance(df):
                 amount = current_btc
                 current_btc = 0
                 current_money += sell_amount * last_price
+                
+                profit_values.append(current_money - initial_value)
+                timestamps.append(pd.Timestamp.now())
+
                 open_position, entry_price, last_action = None, None, f"close_{open_position.lower()}"
     delete_processed_lines(file_path)
 # Helper functions remain unchanged
@@ -120,9 +153,14 @@ def process_data():
         subset = df.iloc[1:11]  # Skip header, process next 10
         weighted_signal_decision_with_close_and_performance(subset)
 
+
+
+        plot_performance(timestamps, profit_values)
+
         # Function to delete the first 10 lines of actual data (after header)
         print("beep boop")
         delete_processed_lines(file_path, 10)
+
 
         # Here you can add a delay or a condition to exit the loop
 
@@ -132,6 +170,7 @@ def print_open_position(index, position, price):
 def print_close_position(index, position, entry, last):
     performance = (last - entry) if position == 'Buy' else (entry - last)
     print(f"Closing {position} Performance: {performance:.2f}")
+
 
 
 def high_risk_scalping_strategy(df):
@@ -164,6 +203,7 @@ def low_risk_scalping_strategy(df):
     # Entry signals based on RSI staying in a safer range
     df['Signal'] = np.where(df['RSI'] > 40, np.where(df['RSI'] < 60, 1, -1), 0)
     return df
+
 
 
 #print(high_risk_scalping_strategy(df))
