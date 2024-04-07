@@ -16,9 +16,9 @@ export default function Bot(props) {
         , [props.sidebarExpanded]);
 
     async function startSession() {
-        const result = await axios.get('http://127.0.0.1:8000/brunixAPI/start_session');
+        const result = await axios.get('http://127.0.0.1:8000/brunixAPI/start_session?risk=' + risk + '&rsi=' + rsi + '&ema_fast=' + emaFast + '&ema_slow=' + emaSlow + '&user=1');
 
-        if(result.status === 200) {
+        if (result.status === 200) {
             console.log('Session started');
         }
         else console.log('Error starting session');
@@ -43,7 +43,11 @@ export default function Bot(props) {
                 <Typography style={{ textAlign: 'center', color: 'rgba(50, 76, 100, 1)', position: 'absolute', top: '15px', fontSize: '25px', fontWeight: 'bold' }}>{translate('bot')}</Typography>
 
                 <div style={{ flexDirection: 'column', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px', backgroundColor: 'white', boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)', padding: '20px', borderRadius: '10px' }}>
-
+                    <Typography style={{ textAlign: 'center', color: 'rgba(50, 76, 100, 1)', position: 'absolute', top: '50px', fontSize: '15px', fontWeight: 'bold' }}>{translate('bot_settings')}</Typography>
+                    <input type="text" value={risk} onChange={(event) => { setRisk(event.target.value) }} />
+                    <input type="text" value={rsi} onChange={(event) => { setRsi(event.target.value) }} />
+                    <input type="text" value={emaFast} onChange={(event) => { setEmaFast(event.target.value) }} />
+                    <input type="text" value={emaSlow} onChange={(event) => { setEmaSlow(event.target.value) }} />
                 </div>
 
                 <button
@@ -59,7 +63,7 @@ export default function Bot(props) {
                         marginTop: '50px',
                         boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)',
                     }}
-                    onClick={()=>{startSession()}}
+                    onClick={() => { startSession() }}
                 >
                     {translate('start_session')}
                 </button>

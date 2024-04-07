@@ -18,6 +18,7 @@ const en = {
     buy: 'Buy',
     sell: 'Sell',
     start_session: 'Start Session',
+    bot_settings: 'Bot Settings',
 };
 
 export default en;

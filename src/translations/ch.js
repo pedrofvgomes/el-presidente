@@ -18,6 +18,7 @@ const ch = {
     buy: '买入',
     sell: '卖出',
     start_session: '开始会话',
+    bot_settings: '机器人设置',
 }
 
 export default ch;
