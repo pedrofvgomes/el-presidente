@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import UserGraph from "../components/UserGraph.jsx";
-import UserBalance from "../components/UserWallet.jsx";
+import UserWallet from "../components/UserWallet.jsx";
 import TransactionList from "../components/TransactionList.jsx";
 import DailyObjective from "../components/DailyObjective.jsx";
-import BTCGraph from "../components/BTCGraph.jsx";
 import { Typography } from "@mui/material";
 import { translate } from "../translations/translate";
 
@@ -13,6 +11,16 @@ export default function Home(props) {
     useEffect(() => {
         setWidth(props.sidebarExpanded ? 'calc(100% - 150px)' : 'calc(100% - 50px)');
     }, [props.sidebarExpanded]);
+
+    setTimeout(() => {
+        if (props.botRunning) {
+            fetch('http://127.0.0.1:8000/brunixAPI/get_transactions')
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(error => { console.error(error) })
+        }
+    }, 1000);
 
     return (
         <div
@@ -25,10 +33,10 @@ export default function Home(props) {
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-around',
+                overflowX: 'hidden'
             }}
         >
             <Typography style={{ color: 'rgba(50, 76, 100, 1)', position: 'absolute', top: '15px', fontSize: '25px', fontWeight: 'bold' }}>{translate('dashboard')}</Typography>
-            {/* Still need to separate in two columns */}
             <div
                 style={{
                     flexDirection: 'column',
@@ -40,7 +48,6 @@ export default function Home(props) {
                     alignItems: 'center'
                 }}
             >
-                <UserGraph />
                 <TransactionList />
             </div>
 
@@ -55,8 +62,7 @@ export default function Home(props) {
                     alignItems: 'center'
                 }}
             >
-                <UserBalance />
-                <BTCGraph />
+                <UserWallet />
                 <DailyObjective />
             </div>
         </div>

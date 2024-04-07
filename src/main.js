@@ -10,14 +10,17 @@ if (require('electron-squirrel-startup')) {
 }
 
 const createWindow = () => {
-  startDjangoServer();
+  // startDjangoServer();
 
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 800,
     minHeight: 600,
-    icon: path.join(__dirname, '../renderer/img/brunix-compact.ico'),
+    icon: process.platform === 'linux' || process.platform === 'darwin' ?
+      path.join(__dirname, '../renderer/img/brunix-compact.png')
+      :
+      path.join(__dirname, '../renderer/img/brunix-compact.ico'),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
@@ -30,7 +33,7 @@ const createWindow = () => {
       callback({ requestHeaders });
     },
   );
-  
+
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     const { responseHeaders } = details;
     UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*']);
@@ -43,7 +46,7 @@ const createWindow = () => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   if (!isDev) mainWindow.removeMenu();
-  if(isDev) mainWindow.webContents.openDevTools();
+  if (isDev) mainWindow.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {

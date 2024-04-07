@@ -6,10 +6,7 @@ from rest_framework.response import Response
 import sys
 sys.path.insert(1, 'python/brunix/main.py')
 from main import *
-from Indicators import transaction_list
-
-id = 0
-
+import Indicators
 
 class BrunixViewSet(viewsets.ViewSet):
 # Create your views here.
@@ -25,12 +22,17 @@ class BrunixViewSet(viewsets.ViewSet):
     @action(methods=['GET'],  detail=False, name='Start session' )
     def start_session( self, request ):
 
-        id = request.GET['id']
-        risk = request.GET['risk']
-        rsi_per = request.GET['rsi_per']
-        ema_fast_per = request.GET['ema_fast_per']
-        ema_slow_per = request.GET['ema_slow_per']
-        main(risk,rsi_per,ema_fast_per,ema_slow_per)
+        print(request)
+
+        iid = int(request.GET['id'])
+        risk = float(int(request.GET['risk'])/100)
+        rsi_per = int(request.GET['rsi'])
+        ema_fast_per = int(request.GET['ema_fast'])
+        ema_slow_per = int(request.GET['ema_slow'])
+
+        print(iid, risk,rsi_per, ema_fast_per, ema_slow_per)
+
+        main(iid, risk,rsi_per,ema_fast_per,ema_slow_per)
 
         return Response( status=status.HTTP_200_OK,
                 data=f"[{ datetime.now() }] Session started" )
@@ -38,8 +40,8 @@ class BrunixViewSet(viewsets.ViewSet):
     
     @action(methods=['GET'],  detail=False, name='Get Transactions' )
     def get_transactions( self, request ):
-        tmp =transaction_list
-        transaction_list = []
+        tmp = Indicators.transaction_list
+        Indicators.transaction_list = []
         return Response( status=status.HTTP_200_OK,
                 data=tmp)
         

@@ -36,13 +36,13 @@ const UserWallet = observer(() => {
                 position: 'relative',
             }}
         >
-            <Typography sx={{ fontSize: '18px', fontWeight: 'bold' }}>
+            <Typography sx={{ fontSize: 'calc(18px + 0.5vw)', fontWeight: 'bold' }}>
                 {translate('wallet')}
             </Typography>
-            <Typography sx={{ fontSize: '20px' }}>
+            <Typography sx={{ fontSize: 'calc(20px + 0.5vw)' }}>
                 {`${btc?.toFixed(10)} BTC`}
             </Typography>
-            <Typography sx={{ fontSize: '18px' }}>
+            <Typography sx={{ fontSize: 'calc(18px + 0.5vw)' }}>
                 {`${convertedToUsd?.toFixed(2)}$`}
             </Typography>
             <svg style={{ position: 'absolute', top: 5, right: 5, width: '20px' }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4091.27 4091.73">
