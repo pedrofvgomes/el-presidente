@@ -1,4 +1,3 @@
-import { transaction } from 'mobx';
 import './pages/App.jsx';
 import { stores } from './stores/index.js';
 import axios from 'axios';
@@ -170,8 +169,6 @@ window.onload = async () => {
         }
     ];
 
-    console.log(transactions);
-
     let create = false;
     if(window.api.read('Transaction', '').length === 0) {
         create = true;
@@ -191,3 +188,42 @@ window.onload = async () => {
     stores.userStore.setDateJoined(testUser.date_joined);
     stores.userStore.setDailyObjective(testUser.daily_objective);
 }
+
+setInterval(async () => {
+    // pedir transações
+    let request = false;// await axios.get(`http://127.0.0.1:8000/brunixAPI/get_transactions?id=${window.api.read('Transaction', '').length + 1}`);
+    if(request.status === 200) {
+        let data = request.request.data;
+
+        if(data.status === 'open'){
+            window.api.create('Transaction', {
+                id: window.api.read('Transaction', '').length + 1,
+                datetime: new Date(data.datetime),
+                amount: data.amount,
+                type: data.type,
+                price: data.price,
+                status: data.status,
+                user: 1,
+                profit_loss: data.profit_loss
+            });
+        }
+        else {
+            let transactions = window.api.read('Transaction', '');
+            // update
+            
+        }
+
+        let id = window.api.read('Transaction', '').length + 1;
+
+        window.api.create('Transaction', {
+            id: id,
+            datetime: new Date(data.datetime),
+            amount: data.amount,
+            type: data.type,
+            price: data.price,
+            status: data.status,
+            user: 1,
+            profit_loss: data.profit_loss
+        });
+    }
+}, 1000);
