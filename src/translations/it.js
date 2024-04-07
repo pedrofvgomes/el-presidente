@@ -17,6 +17,7 @@ const it = {
     status: 'Stato',
     buy: 'Acquista',
     sell: 'Vendi',
+    start_session: 'Inizia sessione',
 };
 
 export default it;

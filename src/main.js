@@ -43,6 +43,7 @@ const createWindow = () => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   if (!isDev) mainWindow.removeMenu();
+  if(isDev) mainWindow.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {

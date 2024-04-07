@@ -17,6 +17,7 @@ const en = {
     status: 'Status',
     buy: 'Buy',
     sell: 'Sell',
+    start_session: 'Start Session',
 };
 
 export default en;

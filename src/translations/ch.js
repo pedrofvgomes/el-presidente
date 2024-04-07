@@ -17,6 +17,7 @@ const ch = {
     status: '状态',
     buy: '买入',
     sell: '卖出',
+    start_session: '开始会话',
 }
 
 export default ch;

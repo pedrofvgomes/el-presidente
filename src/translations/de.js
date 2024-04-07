@@ -17,6 +17,7 @@ const de = {
     status: 'Status',
     buy: 'Kaufen',
     sell: 'Verkaufen',
+    start_session: 'Sitzung starten',
 };
 
 export default de;
