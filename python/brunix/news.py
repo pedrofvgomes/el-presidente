@@ -37,7 +37,7 @@ class News():
         return probability, sentiment, sorted_sentiment_data
 
 
-    def plot_sentiment_analysis(self, sentiment_data, filename='./csv/sentiment_data.csv'):
+    def plot_sentiment_analysis(self, sentiment_data, filename='python/brunix/csv/sentiment_data.csv'):
 
         headlines = [data[0] for data in sentiment_data]
         dates = [datetime.strptime(data[1][:10], '%Y-%m-%d') for data in sentiment_data]

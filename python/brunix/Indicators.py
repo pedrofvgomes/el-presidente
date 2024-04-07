@@ -2,11 +2,15 @@ import pandas as pd
 import talib
 import numpy as np
 from io import StringIO
+from news import News
+from datetime import datetime
+from brunixAPI.views import id
+transaction_list = []
 import time
 import matplotlib.pyplot as plt
 
 # Simulated loading your CSV data into a DataFrame
-file_path = './csv/market_data.csv'  # Make sure the file path is correct
+file_path = 'python/brunix/csv/market_data.csv'  # Make sure the file path is correct
 df = pd.read_csv(file_path)
 
 
@@ -151,10 +155,37 @@ def process_data():
 
 def print_open_position(index, position, price):
     print(f"Opening {position} with price {price:.2f}")
+    
+    data = {
+        'id': id+1,
+        'datetime': datetime.now().isoformat(),
+        'amount': current_money,
+        'type': position,
+        'price': price,
+        'status': 'opened',
+        'user': 1,
+        'profit_loss': 0.00
+    }
+
+    id+=1
+
+    transaction_list.append(data)
 
 def print_close_position(index, position, entry, last):
     performance = (last - entry) if position == 'Buy' else (entry - last)
     print(f"Closing {position} Performance: {performance:.2f}")
+    data = {
+        'id': id+1,
+        'datetime': datetime.now().isoformat(),
+        'amount': current_money,
+        'type': position,
+        'price': last,
+        'status': 'closed',
+        'user': 1,
+        'profit_loss': performance
+    }
+    id += 1
+    transaction_list.append(data)
 
 
 def high_risk_scalping_strategy(df):

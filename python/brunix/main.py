@@ -3,7 +3,6 @@ import time
 from Indicators import *
 
 
-
 # Placeholder for your actual trading algorithm function
 def execute_trading_algorithm(df):
     # This function would contain the logic provided in the previous examples
@@ -13,8 +12,9 @@ def execute_trading_algorithm(df):
     # and make your trading decision based on the output
 
 def main():
-    csv_file_path = './csv/market_data.csv'  # Path to your CSV file
-
+    last_checked_size = 0  # Keep track of the last checked size of the CSV file
+    csv_file_path = 'python/brunix/csv/market_data.csv'  # Path to your CSV file
+    print("ola")
     while True:
         # Load the updated DataFrame
         df = pd.read_csv(csv_file_path)
