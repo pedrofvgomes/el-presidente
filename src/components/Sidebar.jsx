@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SmartToyRounded, SettingsRounded, PersonRounded, DashboardRounded, NewspaperRounded, Expand } from "@mui/icons-material";
+import { SmartToyRounded, DashboardRounded, NewspaperRounded } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { translate } from "../translations/translate";
@@ -155,66 +155,6 @@ export default function Sidebar(props) {
                         }}
                     >
                         {translate('news')}
-                    </Typography>
-                </Link>
-                <Link
-                    to="/main_window/profile"
-                    style={{
-                        textDecoration: 'none',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'left',
-                        alignContent: 'center',
-                        position: 'absolute',
-                        left: sidebarExpanded ? `${(150 - 40 * 584 / 188) / 2}px` : `${(50 - 40 * 164 / 188) / 2}px`,
-                        transition: 'left 0.3s ease-in-out',
-                        top: '230px'
-                    }}
-                >
-                    <PersonRounded style={{ color: 'white', fontSize: `${40 * 164 / 188}px` }} />
-                    <Typography
-                        style={{
-                            color: 'white',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            display: showDescription ? 'flex' : 'none',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            marginLeft: '5px',
-                            width: '60%'
-                        }}
-                    >
-                        {translate('profile')}
-                    </Typography>
-                </Link>
-                <Link
-                    to="/main_window/settings"
-                    style={{
-                        textDecoration: 'none',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'left',
-                        alignContent: 'center',
-                        position: 'absolute',
-                        left: sidebarExpanded ? `${(150 - 40 * 584 / 188) / 2}px` : `${(50 - 40 * 164 / 188) / 2}px`,
-                        transition: 'left 0.3s ease-in-out',
-                        top: '280px'
-                    }}
-                >
-                    <SettingsRounded style={{ color: 'white', fontSize: `${40 * 164 / 188}px` }} />
-                    <Typography
-                        style={{
-                            color: 'white',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            display: showDescription ? 'flex' : 'none',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            marginLeft: '5px',
-                            width: '60%'
-                        }}
-                    >
-                        {translate('settings')}
                     </Typography>
                 </Link>
             </div>

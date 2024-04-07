@@ -19,9 +19,14 @@ const testUser = {
 };
 
 window.onload = async () => {
-    // await window.api.create('User', testUser);
-
     // Create the test user
+
+    let user = window.api.read('User', '');
+
+    if(user.length === 0) {
+        window.api.create('User', testUser);
+    }
+
     let transactions = [
         {
             id: 1,
@@ -167,16 +172,13 @@ window.onload = async () => {
 
     console.log(transactions);
 
-
+    let create = false;
+    if(window.api.read('Transaction', '').length === 0) {
+        create = true;
+    }
     for (let t of transactions) {
-        //const res = await window.api.create('Transaction', t);
-        const res = true;
-        if (res) {
-            console.log('Transaction created successfully!');
-
-            stores.transactionStore.addTransaction(t.datetime, t.type, t.amount, t.price, t.profit_loss, t.status, t.user)
-        }
-        else console.error('Failed to create transaction.');
+        if(create) window.api.create('Transaction', t);
+        stores.transactionStore.addTransaction(t.datetime, t.type, t.amount, t.price, t.profit_loss, t.status, t.user)
     }
 
     stores.userStore.setFirstName(testUser.first_name);
@@ -189,9 +191,3 @@ window.onload = async () => {
     stores.userStore.setDateJoined(testUser.date_joined);
     stores.userStore.setDailyObjective(testUser.daily_objective);
 }
-
-const apiResponse = await axios.get("http://127.0.0.1:8000/brunixAPI/get_val_from/?input=oi");
-
-const apiResponseData = apiResponse.data;
-
-console.log(apiResponseData);
