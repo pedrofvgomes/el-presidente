@@ -5,11 +5,12 @@ import { Typography } from "@mui/material";
 import { translate } from "../translations/translate";
 
 export default function Sidebar(props) {
-    const [mouseEvents, setMouseEvents] = useState(true);
 
     const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
     const [logo, setLogo] = useState('/img/brunix-compact.png');
+
+    const [canUpdate, setCanUpdate] = useState(true);
 
     let logoStyle = {
         marginTop: '10px',
@@ -28,23 +29,19 @@ export default function Sidebar(props) {
         , [props.sidebarExpanded]);
 
     function handleMouseEnter() {
-        if (!mouseEvents || sidebarExpanded) return;
+        if (sidebarExpanded) return;
 
         props.onSidebarHover();
-
         setLogo('/img/brunix.png');
         setShowDescription(true);
     }
 
     function handleMouseLeave() {
-        if (!mouseEvents || !sidebarExpanded) return;
+        if (!sidebarExpanded) return;
 
         props.onSidebarHover();
-
-        setTimeout(() => {
-            setLogo('/img/brunix-compact.png');
-            setShowDescription(false);
-        }, 300);
+        setShowDescription(false);
+        setLogo('/img/brunix-compact.png');
     }
 
     return (
@@ -219,7 +216,7 @@ export default function Sidebar(props) {
                     >
                         {translate('settings')}
                     </Typography>
-                </Link>         
+                </Link>
             </div>
         </div>
     )
