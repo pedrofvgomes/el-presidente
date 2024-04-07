@@ -5,7 +5,6 @@ import Layout from '../components/Layout.jsx';
 import Home from './Home.jsx';
 import '../assets/css/App.css';
 import Bot from './Bot.jsx';
-import News from './News.jsx';
 
 export default function App() {
     const [sidebarExpanded, setSidebarExpanded] = useState(false);
@@ -20,7 +19,6 @@ export default function App() {
                 <Route path="/main_window" element={<Layout onSidebarHover={onSidebarHover} sidebarExpanded={sidebarExpanded} />}>
                     <Route index element={<Home sidebarExpanded={sidebarExpanded} />} />
                     <Route path='bot' element={<Bot sidebarExpanded={sidebarExpanded} />} />
-                    <Route path='news' element={<News />} />
                 </Route>
             </Routes>
         </Router>
