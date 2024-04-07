@@ -34,4 +34,4 @@ def data_to_csv():
 
 while True:
     data_to_csv()
-    time.sleep(10)
+    time.sleep(3)
