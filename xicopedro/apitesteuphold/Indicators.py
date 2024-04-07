@@ -23,22 +23,22 @@ def delete_processed_lines(file_path, lines_to_delete=10):
         file.writelines(lines[:1] + lines[lines_to_delete + 1:])
 
 global open_position, entry_price, last_action
-global current_money, current_btc, entry_value, risk, stop_loss
+global leverage_money, current_btc, entry_value, risk, stop_loss, leverage, current_money
 
 open_position = None
 entry_price = None
 last_action = None
-current_money = 10000  # Example starting money
+leverage_money = 0  # Example starting money
+leverage = 100 # Example leverage
+current_money = 1000 # Example starting money
 current_btc = 0  # Example starting BTC amount
-initial_value = 10000
-risk = 0.01  # Example risk level
+initial_value = 1000 # Example initial value
+risk = 1  # Example risk level
 stop_loss = 0.1  # Example stop loss level
 
 def weighted_signal_decision_with_close_and_performance(df):
     global open_position, entry_price, last_action
-    global current_money, current_btc, initial_value, risk, stop_loss
-
-    sold_bitcoin = 0
+    global leverage_money, current_btc, initial_value, risk, stop_loss, leverage_money, current_money
     
     df_high = high_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_High'})
     df_medium = medium_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_Medium'})
@@ -64,14 +64,16 @@ def weighted_signal_decision_with_close_and_performance(df):
                     # Close sell before buying
                     sell_amount = current_btc
                     current_btc = 0
-                    current_money += sell_amount * last_price
-                    print("Current Profit: ", current_money - initial_value)
+                    leverage_money += (sell_amount * last_price)
+                    current_money += leverage_money
+                    print("Profit Made: ", leverage_money)
+                    leverage_money = 0
                     print_close_position(start, 'Sell', entry_price, last_price)
                 # Check if we're not repeating the same action
                 if last_action != 'open_buy':
-                    buy_amount = (current_money * risk) / last_price
+                    buy_amount = (current_money * risk * leverage) / last_price
                     current_btc += buy_amount
-                    current_money -= buy_amount * last_price
+                    leverage_money -= buy_amount * last_price 
                     print_open_position(start, 'Buy', last_price)
                     open_position, entry_price, last_action = 'Buy', last_price, 'open_buy'
                     
@@ -82,13 +84,15 @@ def weighted_signal_decision_with_close_and_performance(df):
                     # Close buy before selling
                     buy_amount = current_btc
                     current_btc = 0
-                    current_money += buy_amount * last_price
-                    print("Current Profit: ", current_money - initial_value)
+                    leverage_money += buy_amount * last_price
+                    current_money += leverage_money
+                    print("Profit Made: ", leverage_money)
+                    leverage_money = 0
                     print_close_position(start, 'Buy', entry_price, last_price)
                 # Check if we're not repeating the same action
                 if last_action != 'open_sell':
-                    sell_amount = (current_money / last_price) * risk
-                    current_money += sell_amount * last_price
+                    sell_amount = (current_money * risk * leverage) / last_price
+                    leverage_money += sell_amount * last_price
                     current_btc -= sell_amount
                     print_open_position(start, 'Sell', last_price)
                     open_position, entry_price, last_action = 'Sell', last_price, 'open_sell'
@@ -100,8 +104,10 @@ def weighted_signal_decision_with_close_and_performance(df):
                 print_close_position(start, open_position, entry_price, last_price)
                 amount = current_btc
                 current_btc = 0
-                current_money += sell_amount * last_price
-                print("Current Profit: ", current_money - initial_value)
+                leverage_money += amount * last_price
+                current_money += leverage_money
+                print("Profit Made: ", leverage_money)
+                leverage_money = 0
                 open_position, entry_price, last_action = None, None, f"close_{open_position.lower()}"
     delete_processed_lines(file_path)
 # Helper functions remain unchanged
@@ -113,6 +119,8 @@ def weighted_signal_decision_with_close_and_performance(df):
  #   return df['Signal'].mean()  # Simplified example
 
 def process_data():
+    global leverage_money
+    print("current money TRUE start: ", current_money)
     while True:
         df = pd.read_csv(file_path)
         
@@ -122,7 +130,7 @@ def process_data():
         # Process the first 10 lines of data
         subset = df.iloc[1:11]  # Skip header, process next 10
         weighted_signal_decision_with_close_and_performance(subset)
-
+        print("current money off the loop: ", current_money)
         # Function to delete the first 10 lines of actual data (after header)
         print("beep boop")
         delete_processed_lines(file_path, 10)
