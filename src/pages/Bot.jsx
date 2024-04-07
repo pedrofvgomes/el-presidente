@@ -38,6 +38,12 @@ export default function Bot(props) {
             <div style={{ flexDirection: 'column', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography style={{ textAlign: 'center', color: 'rgba(50, 76, 100, 1)', position: 'absolute', top: '15px', fontSize: '25px', fontWeight: 'bold' }}>{translate('bot')}</Typography>
 
+                <ul style={{ listStyleType: 'none', padding: 0 }}>
+                    <li style={{ marginBottom: '20px' }}>{translate('bot_description')}</li>
+                    <li style={{ marginBottom: '20px' }}>{translate('bot_description_2')}</li>
+                    <li style={{ marginBottom: '20px' }}>{translate('bot_description_3')}</li>
+                </ul>
+
                 <button
                     style={{
                         width: '200px',
