@@ -4,7 +4,6 @@ import numpy as np
 from io import StringIO
 from news import News
 from datetime import datetime
-from brunixAPI.views import id
 transaction_list = []
 
 # Simulated loading your CSV data into a DataFrame
@@ -40,7 +39,7 @@ risk = 0.01  # Example risk level
 stop_loss = 0.1  # Example stop loss level
 
 
-def weighted_signal_decision_with_close_and_performance(df,risk,rsi_per,ema_fast_per,ema_slow_per):
+def weighted_signal_decision_with_close_and_performance(iid,df,risk,rsi_per,ema_fast_per,ema_slow_per):
     global open_position, entry_price, last_action
     global current_money, current_btc, initial_value,  stop_loss
 
@@ -75,13 +74,13 @@ def weighted_signal_decision_with_close_and_performance(df,risk,rsi_per,ema_fast
                     sell_amount = current_btc
                     current_btc = 0
                     current_money += sell_amount * last_price
-                    print_close_position(start, 'Sell', entry_price, last_price)
+                    print_close_position(iid, 'Sell', entry_price, last_price)
                 # Check if we're not repeating the same action
                 if last_action != 'open_buy':
                     buy_amount = (current_money * risk) / last_price
                     current_btc += buy_amount
                     current_money -= buy_amount * last_price
-                    print_open_position(start, 'Buy', last_price)
+                    print_open_position(iid, 'Buy', last_price)
                     open_position, entry_price, last_action = 'Buy', last_price, 'open_buy'
                     
         elif weighted_signal < 0:
@@ -92,20 +91,20 @@ def weighted_signal_decision_with_close_and_performance(df,risk,rsi_per,ema_fast
                     buy_amount = current_btc
                     current_btc = 0
                     current_money += buy_amount * last_price
-                    print_close_position(start, 'Buy', entry_price, last_price)
+                    print_close_position(iid, 'Buy', entry_price, last_price)
                 # Check if we're not repeating the same action
                 if last_action != 'open_sell':
                     sell_amount = (current_money / last_price) * risk
                     current_money += sell_amount * last_price
                     current_btc -= sell_amount
-                    print_open_position(start, 'Sell', last_price)
+                    print_open_position(iid, 'Sell', last_price)
                     open_position, entry_price, last_action = 'Sell', last_price, 'open_sell'
                 
         elif abs(weighted_signal) < 0.1 and open_position:
             # Close existing position due to weak signal
             if last_action not in ['close_buy', 'close_sell']:
                 performance = (last_price - entry_price) if open_position == 'Buy' else (entry_price - last_price)
-                print_close_position(start, open_position, entry_price, last_price)
+                print_close_position(iid, open_position, entry_price, last_price)
                 amount = current_btc
                 current_btc = 0
                 current_money += sell_amount * last_price
@@ -119,7 +118,7 @@ def weighted_signal_decision_with_close_and_performance(df,risk,rsi_per,ema_fast
     # Placeholder for your real weighted signal calculation
  #   return df['Signal'].mean()  # Simplified example
 
-def process_data(risk,rsi_per,ema_fast_per,ema_slow_per):
+def process_data(iid, risk,rsi_per,ema_fast_per,ema_slow_per):
     while True:
         df = pd.read_csv(file_path)
         
@@ -128,7 +127,7 @@ def process_data(risk,rsi_per,ema_fast_per,ema_slow_per):
 
         # Process the first 10 lines of data
         subset = df.iloc[1:11]  # Skip header, process next 10
-        weighted_signal_decision_with_close_and_performance(subset,risk,rsi_per,ema_fast_per,ema_slow_per)
+        weighted_signal_decision_with_close_and_performance(iid, subset,risk,rsi_per,ema_fast_per,ema_slow_per)
 
         # Function to delete the first 10 lines of actual data (after header)
         print("beep boop")
@@ -140,7 +139,7 @@ def print_open_position(index, position, price):
     print(f"Opening {position} with price {price:.2f}")
     
     data = {
-        'id': id+1,
+        'id': index+1,
         'datetime': datetime.now().isoformat(),
         'amount': current_money,
         'type': position,
@@ -150,7 +149,7 @@ def print_open_position(index, position, price):
         'profit_loss': 0.00
     }
 
-    id+=1
+    index+=1
 
     transaction_list.append(data)
 
@@ -158,7 +157,7 @@ def print_close_position(index, position, entry, last):
     performance = (last - entry) if position == 'Buy' else (entry - last)
     print(f"Closing {position} Performance: {performance:.2f}")
     data = {
-        'id': id+1,
+        'id': index+1,
         'datetime': datetime.now().isoformat(),
         'amount': current_money,
         'type': position,
@@ -167,7 +166,7 @@ def print_close_position(index, position, entry, last):
         'user': 1,
         'profit_loss': performance
     }
-    id += 1
+    index += 1
     transaction_list.append(data)
 
 

@@ -7,9 +7,11 @@ console.log(stores)
 
 const TransactionList = observer(() => {
     const [transactions, setTransactions] = useState([]);
+    const [tableHeight, setTableHeight] = useState(0);
 
     useEffect(() => {
         setTransactions(stores.transactionStore.transactions);
+        setTableHeight(window.innerHeight / 1.5)
     }, [stores.transactionStore.transactions]);
 
     function formatTime(datetime) {
@@ -19,11 +21,11 @@ const TransactionList = observer(() => {
     }
 
     return (
-        <div style={{ width: '100%', maxHeight: '200px', overflowY: "auto" }}>
+        <div style={{ width: '100%', maxHeight: `calc(400px + 0.5vh)`, overflowY: "auto" }}>
             <table
                 style={{
                     width: "100%",
-                    fontSize: "10px",
+                    fontSize: "12px",
                     borderCollapse: "collapse",
                     backgroundColor: "white",
                     boxShadow: "0px 5px 5px 0px rgba(0,0,0,0.1)",

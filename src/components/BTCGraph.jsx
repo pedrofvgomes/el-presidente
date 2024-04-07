@@ -69,11 +69,6 @@ export default function BTCGraph() {
             backgroundColor: 'white',
             boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)',
         }}>
-            {data && (
-                <CanvasJSChart options={options}
-                    onRef={() => { }}
-                />
-            )}
         </div>
     );
 }

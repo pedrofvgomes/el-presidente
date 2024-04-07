@@ -18,6 +18,7 @@ const de = {
     buy: 'Kaufen',
     sell: 'Verkaufen',
     start_session: 'Sitzung starten',
+    bot_settings: 'Bot-Einstellungen',
 };
 
 export default de;

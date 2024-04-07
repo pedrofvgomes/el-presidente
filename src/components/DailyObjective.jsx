@@ -32,7 +32,7 @@ const DailyObjective = observer(() => {
             }}
         >
 
-            <Typography sx={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '10px' }}>
+            <Typography sx={{ fontSize: 'calc(12px + 0.5vw)', fontWeight: 'bold', marginBottom: '10px' }}>
                 {new Date().toLocaleDateString()}
             </Typography>
             <CircularWithValueLabel
@@ -42,10 +42,10 @@ const DailyObjective = observer(() => {
                         current / stores.userStore.dailyObjective * 100 : 0
                 }
             />
-            <Typography sx={{ fontSize: '15px', fontWeight: 'bold', marginTop: '10px', color: current >= 0 ? 'green' : 'red' }}>
+            <Typography sx={{ fontSize: 'calc(15px + 0.5vw)', fontWeight: 'bold', marginTop: '10px', color: current >= 0 ? 'green' : 'red' }}>
                 {`${current > 0 && '+' || ''}${current?.toFixed(2)}$`}
             </Typography>
-            <Typography sx={{ fontSize: '15px', fontWeight: 'bold', marginTop: '10px' }}>
+            <Typography sx={{ fontSize: 'calc(15px + 0.5vw)', fontWeight: 'bold', marginTop: '10px' }}>
                 {translate("objective_today")}: {stores.userStore.dailyObjective}$
             </Typography>
         </div>

@@ -13,12 +13,18 @@ export default function App() {
         setSidebarExpanded(!sidebarExpanded);
     }
 
+    const [botRunning, setBotRunning] = useState(false)
+
+    function botStarted(){
+        setBotRunning(true)
+    }
+
     return (
         <Router>
             <Routes>
                 <Route path="/main_window" element={<Layout onSidebarHover={onSidebarHover} sidebarExpanded={sidebarExpanded} />}>
-                    <Route index element={<Home sidebarExpanded={sidebarExpanded} />} />
-                    <Route path='bot' element={<Bot sidebarExpanded={sidebarExpanded} />} />
+                    <Route index element={<Home botRunning={botRunning} sidebarExpanded={sidebarExpanded} />} />
+                    <Route path='bot' element={<Bot botStarted={botStarted} sidebarExpanded={sidebarExpanded} />} />
                 </Route>
             </Routes>
         </Router>
