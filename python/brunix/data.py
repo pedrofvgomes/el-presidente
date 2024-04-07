@@ -16,6 +16,12 @@ def data_to_csv():
         # Create a DataFrame from the market data dictionary
         df = pd.DataFrame([market_data])
     
+    file_path = 'python/brunix/csv/market_data.csv'
+
+    # Check if the file exists to determine if the header should be written
+    if os.path.exists(file_path):
+        # Append data without header
+        df.to_csv(file_path, mode='a', header=False, index=False)
         # Insert the DateTime column at the first position
         df.insert(0, 'DateTime', now)
         
