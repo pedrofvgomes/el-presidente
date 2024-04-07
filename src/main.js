@@ -23,6 +23,23 @@ const createWindow = () => {
     },
   });
 
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+    (details, callback) => {
+      const { requestHeaders } = details;
+      UpsertKeyValue(requestHeaders, 'Access-Control-Allow-Origin', ['*']);
+      callback({ requestHeaders });
+    },
+  );
+  
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    const { responseHeaders } = details;
+    UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Origin', ['*']);
+    UpsertKeyValue(responseHeaders, 'Access-Control-Allow-Headers', ['*']);
+    callback({
+      responseHeaders,
+    });
+  });
+
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   if (!isDev) mainWindow.removeMenu();
@@ -122,9 +139,11 @@ ipcMain.handle('read', async (event, model, filters) => {
  * @returns {boolean} - Indicates whether the operation was successful (true) or not (false).
  */
 function update(realmObject, field, value) {
+  console.log(realmDB.objects);
   try {
     realmDB.write(() => {
-      realmObject.setValue(value, field);
+      // Update Realm.objects(realmObject) with the new value
+      realmDB.create(realmObject, { [field]: value }, 'modified')
     });
     return true; // Operation successful
   } catch (error) {
@@ -159,4 +178,19 @@ const startDjangoServer = () => {
     console.log(`message:\n${message}`);
   });
   return djangoBackend;
+}
+
+
+function UpsertKeyValue(obj, keyToChange, value) {
+  const keyToChangeLower = keyToChange.toLowerCase();
+  for (const key of Object.keys(obj)) {
+    if (key.toLowerCase() === keyToChangeLower) {
+      // Reassign old key
+      obj[key] = value;
+      // Done
+      return;
+    }
+  }
+  // Insert at end instead
+  obj[keyToChange] = value;
 }
