@@ -2,6 +2,8 @@ import pandas as pd
 import talib
 import numpy as np
 from io import StringIO
+import time
+import matplotlib.pyplot as plt
 
 # Simulated loading your CSV data into a DataFrame
 file_path = 'market_data.csv'  # Make sure the file path is correct
@@ -13,14 +15,14 @@ df = pd.read_csv(file_path)
 # Convert 'real_price' column to a numpy array
 #df = df1['real_price'].values
 
-def delete_processed_lines(file_path, lines_to_delete=10):
-    """Deletes the first N lines of the CSV file after they have been processed."""
+"""def delete_processed_lines(file_path, lines_to_delete=10):
+    #Deletes the first N lines of the CSV file after they have been processed.
     with open(file_path, 'r') as file:
         lines = file.readlines()
 
     # Keep the header and the lines after the first N
     with open(file_path, 'w') as file:
-        file.writelines(lines[:1] + lines[lines_to_delete + 1:])
+        file.writelines(lines[:1] + lines[lines_to_delete + 1:])"""
 
 global open_position, entry_price, last_action
 global leverage_money, current_btc, entry_value, risk, stop_loss, leverage, current_money
@@ -36,6 +38,10 @@ initial_value = 1000 # Example initial value
 risk = 1  # Example risk level
 stop_loss = 0.1  # Example stop loss level
 
+current_money_list = []
+current_money_list.append(current_money)
+
+
 def weighted_signal_decision_with_close_and_performance(df):
     global open_position, entry_price, last_action
     global leverage_money, current_btc, initial_value, risk, stop_loss, leverage_money, current_money
@@ -45,17 +51,15 @@ def weighted_signal_decision_with_close_and_performance(df):
     df_low = low_risk_scalping_strategy(df.copy()).rename(columns={'Signal': 'Signal_Low'})
     
     combined_df = df_high[['Signal_High', 'real_price']].join([df_medium[['Signal_Medium']], df_low[['Signal_Low']]])
+   
+    for start in range(0, len(combined_df), 100):
+        subset = combined_df.iloc[start:start+100]
 
-    for start in range(0, len(combined_df), 10):
-        subset = combined_df.iloc[start:start+10]
-        if len(subset) < 10:
-            continue  # Skip if less than 10
-
-        
         weighted_signal = (subset['Signal_High'].sum() * 0.2 + 
                            subset['Signal_Medium'].sum() * 0.3 +
                            subset['Signal_Low'].sum() * 0.5) / 10
-        last_price = subset['real_price'].iloc[-1]
+        
+        last_price = subset['real_price'].iloc[-1]  
         
         if weighted_signal > 0:
             if open_position != 'Buy':
@@ -109,7 +113,7 @@ def weighted_signal_decision_with_close_and_performance(df):
                 print("Profit Made: ", leverage_money)
                 leverage_money = 0
                 open_position, entry_price, last_action = None, None, f"close_{open_position.lower()}"
-    delete_processed_lines(file_path)
+
 # Helper functions remain unchanged
 
         # Additional logic to handle closing positions on weak signals...
@@ -124,16 +128,27 @@ def process_data():
     while True:
         df = pd.read_csv(file_path)
         
-        if len(df) < 11:  # Ensure there's more than just the header
+        
+
+        if len(df) < 100:  # Ensure there's more than just the header
             continue  # Wait for more data
 
+        current_money_list.append(current_money)
+        plt.plot(current_money_list)
+        plt.xlabel('Time')
+        plt.ylabel('Current Money')
+        plt.title('Current Money Over Time')
+        plt.savefig('current_money.png')
+
         # Process the first 10 lines of data
-        subset = df.iloc[1:11]  # Skip header, process next 10
+        subset = df.iloc[1:101]  # Skip header, process next 10
         weighted_signal_decision_with_close_and_performance(subset)
         print("current money off the loop: ", current_money)
         # Function to delete the first 10 lines of actual data (after header)
-        print("beep boop")
-        delete_processed_lines(file_path, 10)
+        print("sleep sleep")
+        time.sleep(3)
+
+        #delete_processed_lines(file_path, 10)
 
         # Here you can add a delay or a condition to exit the loop
 
@@ -147,9 +162,9 @@ def print_close_position(index, position, entry, last):
 
 def high_risk_scalping_strategy(df):
     # Fast MACD for momentum, using real_price
-    df['MACD'], df['MACD_signal'], _ = talib.MACD(df['real_price'], fastperiod=6, slowperiod=13, signalperiod=5)
+    df['MACD'], df['MACD_signal'], _ = talib.MACD(df['real_price'], fastperiod=10, slowperiod=20, signalperiod=5)
     # RSI to avoid overbought situations, using real_price
-    df['RSI'] = talib.RSI(df['real_price'], timeperiod=7)
+    df['RSI'] = talib.RSI(df['real_price'], timeperiod=30)
     
     # Entry signal: MACD above signal and RSI not overbought
     df['Signal'] = np.where((df['MACD'] > df['MACD_signal']) & (df['RSI'] < 70), 1,
@@ -159,8 +174,8 @@ def high_risk_scalping_strategy(df):
 
 def medium_risk_scalping_strategy(df):
     # Short and medium EMAs to identify trend, using real_price
-    df['EMA_fast'] = talib.EMA(df['real_price'], timeperiod=5)
-    df['EMA_slow'] = talib.EMA(df['real_price'], timeperiod=10)
+    df['EMA_fast'] = talib.EMA(df['real_price'], timeperiod=50)
+    df['EMA_slow'] = talib.EMA(df['real_price'], timeperiod=70)
     
     # Entry signal: EMA_fast crosses above EMA_slow
     df['Signal'] = np.where((df['EMA_fast'] > df['EMA_slow']), 1,
@@ -170,7 +185,7 @@ def medium_risk_scalping_strategy(df):
 
 def low_risk_scalping_strategy(df):
     # RSI for market condition, using real_price
-    df['RSI'] = talib.RSI(df['real_price'], timeperiod=14)
+    df['RSI'] = talib.RSI(df['real_price'], timeperiod=100)
     
     # Entry signals based on RSI staying in a safer range
     df['Signal'] = np.where(df['RSI'] > 40, np.where(df['RSI'] < 60, 1, -1), 0)

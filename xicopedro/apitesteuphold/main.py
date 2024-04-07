@@ -13,7 +13,6 @@ def execute_trading_algorithm(df):
     # and make your trading decision based on the output
 
 def main():
-    last_checked_size = 0  # Keep track of the last checked size of the CSV file
     csv_file_path = 'market_data.csv'  # Path to your CSV file
 
     while True:
@@ -21,7 +20,7 @@ def main():
         df = pd.read_csv(csv_file_path)
         
         # Check if 10 new prices have been added since last check
-        if len(df) - last_checked_size >= 10:
+        if len(df)  >= 90:
             # Execute your trading algorithm
             process_data()
 
