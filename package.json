@@ -38,12 +38,14 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@canvasjs/react-charts": "^1.0.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
-    "chart.js": "^4.4.2",
+    "anno": "^0.0.2",
     "axios": "^1.6.8",
+    "chart.js": "^4.4.2",
     "child_process": "^1.0.2",
     "copy-webpack-plugin": "^12.0.2",
     "cors": "^2.8.5",
@@ -56,9 +58,11 @@
     "path": "^0.12.7",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
+    "react-apexcharts": "^1.4.1",
     "react-bootstrap": "^2.10.2",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+    "react-google-charts": "^4.0.1",
     "realm": "^12.6.2"
   }
 }

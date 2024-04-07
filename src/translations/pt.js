@@ -17,6 +17,7 @@ const pt = {
     status: 'Estado',
     buy: 'Compra',
     sell: 'Venda',
+    start_session: 'Começar a sessão',
 };
 
 export default pt;

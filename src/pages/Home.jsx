@@ -5,6 +5,7 @@ import TransactionList from "../components/TransactionList.jsx";
 import DailyObjective from "../components/DailyObjective.jsx";
 import BTCGraph from "../components/BTCGraph.jsx";
 import { Typography } from "@mui/material";
+import { translate } from "../translations/translate";
 
 export default function Home(props) {
     const [width, setWidth] = useState(props.sidebarExpanded ? 'calc(100% - 200px)' : 'calc(100% - 80px)');
@@ -26,7 +27,7 @@ export default function Home(props) {
                 justifyContent: 'space-around',
             }}
         >
-            <Typography style={{ color: 'rgba(50, 76, 100, 1)', position: 'absolute', top: '15px', fontSize: '25px', fontWeight: 'bold' }}>Dashboard</Typography>
+            <Typography style={{ color: 'rgba(50, 76, 100, 1)', position: 'absolute', top: '15px', fontSize: '25px', fontWeight: 'bold' }}>{translate('dashboard')}</Typography>
             {/* Still need to separate in two columns */}
             <div
                 style={{

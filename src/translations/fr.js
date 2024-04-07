@@ -17,6 +17,7 @@ const fr = {
     status: 'Statut',
     buy: 'Acheter',
     sell: 'Vendre',
+    start_session: 'Commencer la session',
 };
 
 export default fr;

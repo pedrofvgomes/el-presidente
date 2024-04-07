@@ -1,83 +1,79 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
-import moment from "moment";
+import CanvasJSReact from '@canvasjs/react-charts';
+
+var CanvasJS = CanvasJSReact.CanvasJS;
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export default function BTCGraph() {
-  const [fetchingData, setFetchingData] = useState(true);
-  const [data, setData] = useState(null);
+    const [fetchingData, setFetchingData] = useState(true);
+    const [data, setData] = useState(null);
+    const [selectedInterval, setSelectedInterval] = useState("1d");
 
-  useEffect(() => {
-    const getData = () => {
-      const url = "https://api.coindesk.com/v1/bpi/historical/close.json";
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((bitcoinData) => {
-          const sortedData = [];
-          let count = 0;
-          for (let date in bitcoinData.bpi) {
-            sortedData.push({
-              d: moment(date).format('MMM DD'),
-              p: bitcoinData.bpi[date].toLocaleString("us-EN", {
-                style: "currency",
-                currency: "USD",
-              }),
-              x: count, //previous days
-              y: bitcoinData.bpi[date], // numerical price
-            });
-            count++;
-          }
-          setData(sortedData);
-          console.log("Data: ", sortedData);
-          setFetchingData(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching data: ", error);
-        });
-    };
-
-    getData();
-  }, []);
-
-  const chartData = {
-    labels: data ? data.map(item => new Date(item.d)) : [], // Convert date strings to Date objects
-    datasets: [
-      {
-        label: "Bitcoin Price (USD)",
-        data: data ? data.map(item => item.y) : [],
-        borderColor: "rgba(75,192,192,1)",
-        backgroundColor: "rgba(75,192,192,0.2)",
-      },
-    ],
-  };
-
-  const chartOptions = {
-    scales: {
-      xAxes: [{
-        type: 'time',
-        time: {
-          unit: 'day',
-          displayFormats: {
-            day: 'MMM DD'
-          }
+    let options = {
+        theme: "dark1", // "light1", "light2", "dark1", "dark2"
+        animationEnabled: true,
+        title: {
+            text: "BTCUSD"
+        },
+        axisX: {
+            valueFormatString: "MMM"
+        },
+        axisY: {
+            prefix: "$",
+            title: "Price (in USD)"
+        },
+        data: [{
+            type: "candlestick",
+            showInLegend: true,
+            name: "BTCUSD",
+            yValueFormatString: "$###0.00",
+            xValueFormatString: "MMMM YY",
+            dataPoints: []
         }
-      }],
-      yAxes: [{
-        ticks: {
-          callback: function(value, index, values) {
-            return '$' + value.toLocaleString(); // Format y-axis labels as currency
-          }
-        }
-      }]
+        ]
     }
-  };
-  
 
-  return (
-    <div className="chart-container">
-      <h2>Bitcoin Price Chart</h2>
-    </div>
-  );
-  
+    useEffect(() => {
+        const getData = () => {
+            const url = `https://api.pro.coinbase.com/products/BTC-USD/candles/${selectedInterval}`;
+
+            fetch(url)
+                .then((response) => response.json())
+                .then((bitcoinData) => {
+                    // format the series for candles
+                    const formattedData = bitcoinData.map((candle) => {
+                        return {
+                            x: new Date(candle[0]),
+                            y: [candle[1], candle[2], candle[3], candle[4]]
+                        }
+                    });
+
+                    setData(formattedData);
+
+                    options.data[0].dataPoints = formattedData;
+
+                    setFetchingData(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data: ", error);
+                });
+        };
+
+        getData();
+    }, [selectedInterval]);
+
+    return (
+        <div style={{
+            width: '100%',
+            height: '100px',
+            backgroundColor: 'white',
+            boxShadow: '0px 5px 5px 0px rgba(0,0,0,0.1)',
+        }}>
+            {data && (
+                <CanvasJSChart options={options}
+                    onRef={() => { }}
+                />
+            )}
+        </div>
+    );
 }
-
