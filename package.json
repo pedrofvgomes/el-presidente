@@ -43,7 +43,10 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
+<<<<<<< HEAD
+=======
     "anno": "^0.0.2",
+>>>>>>> 4e58a5b11c2e0167e6b54b859c36d7974d56a115
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
     "child_process": "^1.0.2",

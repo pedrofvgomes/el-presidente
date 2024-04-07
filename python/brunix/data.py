@@ -11,13 +11,10 @@ def data_to_csv():
     # Fetch market data for BTC; assuming this returns a dictionary
     market_data = nft_stats('BTC')
 
-    market_data['real_price'] = (float(market_data['ask']) + float(market_data['bid'])) / 2
-
-    # Create a DataFrame from the market data dictionary
-    df = pd.DataFrame([market_data])
-
-    # Insert the DateTime column at the first position
-    df.insert(0, 'DateTime', now)
+    if market_data is not None:
+        market_data['real_price'] = (float(market_data['ask']) + float(market_data['bid'])) / 2
+        # Create a DataFrame from the market data dictionary
+        df = pd.DataFrame([market_data])
     
     file_path = 'python/brunix/csv/market_data.csv'
 
@@ -25,11 +22,23 @@ def data_to_csv():
     if os.path.exists(file_path):
         # Append data without header
         df.to_csv(file_path, mode='a', header=False, index=False)
+        # Insert the DateTime column at the first position
+        df.insert(0, 'DateTime', now)
+        
+        file_path = './csv/market_data.csv'
+    
+        # Check if the file exists to determine if the header should be written
+        if os.path.exists(file_path):
+            # Append data without header
+            df.to_csv(file_path, mode='a', header=False, index=False)
+        else:
+            # Write new file with header
+            df.to_csv(file_path, mode='w', header=True, index=False)
+    
+        print(f"Data appended to {file_path}.")
     else:
-        # Write new file with header
-        df.to_csv(file_path, mode='w', header=True, index=False)
-
-    print(f"Data appended to {file_path}.")
+        print("Failed to fetch market data.")
+    
 
 
 while True:
