@@ -2,15 +2,11 @@ import pandas as pd
 import talib
 import numpy as np
 from io import StringIO
-from news import News
-from datetime import datetime
-from brunixAPI.views import id
-transaction_list = []
 import time
 import matplotlib.pyplot as plt
 
 # Simulated loading your CSV data into a DataFrame
-file_path = 'python/brunix/csv/market_data.csv'  # Make sure the file path is correct
+file_path = 'market_data.csv'  # Make sure the file path is correct
 df = pd.read_csv(file_path)
 
 
@@ -44,6 +40,8 @@ stop_loss = 0.1  # Example stop loss level
 
 current_money_list = []
 current_money_list.append(current_money)
+
+current_money
 
 
 def weighted_signal_decision_with_close_and_performance(df):
@@ -128,6 +126,7 @@ def weighted_signal_decision_with_close_and_performance(df):
 
 def process_data():
     global leverage_money
+    print("current money TRUE start: ", current_money)
     while True:
         df = pd.read_csv(file_path)
         
@@ -146,7 +145,9 @@ def process_data():
         # Process the first 10 lines of data
         subset = df.iloc[1:101]  # Skip header, process next 10
         weighted_signal_decision_with_close_and_performance(subset)
+        print("current money off the loop: ", current_money)
         # Function to delete the first 10 lines of actual data (after header)
+        print("sleep sleep")
         time.sleep(3)
 
         #delete_processed_lines(file_path, 10)
@@ -155,37 +156,10 @@ def process_data():
 
 def print_open_position(index, position, price):
     print(f"Opening {position} with price {price:.2f}")
-    
-    data = {
-        'id': id+1,
-        'datetime': datetime.now().isoformat(),
-        'amount': current_money,
-        'type': position,
-        'price': price,
-        'status': 'opened',
-        'user': 1,
-        'profit_loss': 0.00
-    }
-
-    id+=1
-
-    transaction_list.append(data)
 
 def print_close_position(index, position, entry, last):
     performance = (last - entry) if position == 'Buy' else (entry - last)
     print(f"Closing {position} Performance: {performance:.2f}")
-    data = {
-        'id': id+1,
-        'datetime': datetime.now().isoformat(),
-        'amount': current_money,
-        'type': position,
-        'price': last,
-        'status': 'closed',
-        'user': 1,
-        'profit_loss': performance
-    }
-    id += 1
-    transaction_list.append(data)
 
 
 def high_risk_scalping_strategy(df):

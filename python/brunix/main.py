@@ -20,7 +20,7 @@ def main():
         df = pd.read_csv(csv_file_path)
         
         # Check if 10 new prices have been added since last check
-        if len(df) - last_checked_size >= 10:
+        if len(df)  >= 90:
             # Execute your trading algorithm
             process_data()
 
